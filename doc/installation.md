@@ -53,3 +53,24 @@ This guide covers the installation of prerequisites, setting up the Python envir
   docker tag thai-ocr-paddleocr:latest <AWS_ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com/thai-ocr-paddleocr:latest
   docker push <AWS_ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com/thai-ocr-paddleocr:latest
   ```
+
+## Terraform Setup
+
+After installing the Terraform CLI, initialize the project workspace:
+
+1. Download Terraform for Windows (zip archive) from:
+   ```
+   https://www.terraform.io/downloads.html
+   ```
+2. Unzip the package and add `terraform.exe` to a folder on your `PATH`, for example:
+   - `C:\terraform`
+   - or another directory already in your `PATH`
+3. Open a new PowerShell session and verify:
+   ```powershell
+   terraform version
+   ```
+4. From the project root (where your `.tf` files live), run:
+   ```powershell
+   terraform init
+   ```
+   This will download providers and set up the working directory.
