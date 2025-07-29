@@ -4,7 +4,7 @@ This file outlines the key development tasks for the Thai OCR project, based on 
 
 ## 1. Environment & Setup
 
-- [ ] Create and activate Python virtual environment
+- [x] Create and activate Python virtual environment
 - [ ] Install project dependencies
   - `pip install -r thai-letters/requirements.txt`
   - `pip install paddlepaddle paddleocr boto3 sagemaker`
