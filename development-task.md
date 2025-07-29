@@ -16,11 +16,12 @@ This file outlines the key development tasks for the Thai OCR project, based on 
 - [x] Generate synthetic Thai OCR data
   - `thai-letters/quick_phase1_generator.py`
   - `thai-letters/thai_dataset_generator.py`
-- [ ] Annotate or collect real Thai document images
-- [ ] Convert annotations to PaddleOCR format
-  - `thai-letters/phase1_paddleocr_converter.py`
-- [ ] Verify generated dataset structure:
-  - `image/`, `label/`, `train_list.txt`, `val_list.txt`
+- [x] Dataset ready with 3,870 images (3,117 train, 753 val)
+  - Format: `thai_data/train_data/rec/rec_gt_train.txt`
+  - Format: `thai_data/train_data/rec/rec_gt_val.txt`
+- [x] Verify generated dataset structure:
+  - ✅ Training images in `thai_data/train/` and `thai_data/val/`
+  - ✅ Labels in PaddleOCR format: `image_path[TAB]thai_text`
 
 ## 3. Configuration
 

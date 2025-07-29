@@ -2,57 +2,69 @@
 
 A comprehensive Optical Character Recognition (OCR) solution for the Thai language built on PaddleOCR. This project provides scripts for data generation, dataset conversion, model training, and deployment on AWS SageMaker with infrastructure managed by Terraform.
 
-## Repository Layout
+## 🎯 Current Status
+
+**Phase**: Data preparation completed ✅ - Ready for model training
+
+- **✅ Completed**: Environment setup, AWS CLI configuration, Terraform setup, Synthetic dataset generation (3,870 images)
+- **🔄 In Progress**: PaddleOCR configuration for Thai recognition
+- **📋 Next**: Model training and deployment
+
+## 📁 Repository Layout
 
 ```text
-sagemaker_ocr_thai/                # Project root
-├── doc/                           # Full project documentation (English)
-│   ├── README.md                  # Documentation index
-│   ├── overview.md                # Project overview
-│   ├── installation.md            # Setup and installation
-│   ├── dataset.md                 # Data generation & conversion
-│   ├── training.md                # Training pipeline
-│   ├── deployment.md              # Deployment & inference
-│   └── terraform.md               # Terraform IaC guide
-├── thai-letters/                  # Data generation and conversion scripts
-├── train_data_thai_paddleocr_*/   # Converted PaddleOCR datasets
-├── th_dict.txt                    # Comprehensive Thai character dictionary
-└── README.md (this file)          # Project overview and quick start
+sagemaker_ocr_thai/                          # Project root
+├── doc/                                    # Full project documentation
+├── scripts/                                # Setup and configuration scripts
+│   ├── configure_aws_cli.ps1              # ✅ AWS CLI setup
+│   ├── install_terraform.ps1              # ✅ Terraform installation  
+│   ├── setup_env.ps1                      # Python environment setup
+│   └── install_deps.ps1                   # Dependencies installation
+├── thai-letters/                           # Data generation scripts
+│   ├── train_data_thai_phase1_0729_1331/  # ✅ Ready dataset (3,870 images)
+│   │   └── train_data/rec/                # PaddleOCR format
+│   │       ├── rec_gt_train.txt           # 3,117 training samples
+│   │       ├── rec_gt_val.txt             # 753 validation samples
+│   │       └── thai_data/                 # Image files
+│   ├── quick_phase1_generator.py          # ✅ Main data generator
+│   └── ...other scripts...                # Alternative generators
+├── th_dict.txt                            # Thai character dictionary
+├── development-task.md                    # ✅ Task tracking
+└── README.md (this file)                  # Project overview
 ```  
 
-## Quick Start
+## 🚀 Quick Start
 
-1. Read detailed documentation in the `doc/` folder:
-   ```bash
-   less doc/README.md
-   ```
+### 1. Environment Setup
+```powershell
+# Configure AWS CLI
+powershell -ExecutionPolicy Bypass -File .\scripts\configure_aws_cli.ps1 -Profile default
 
-2. Install prerequisites and dependencies:
-   ```bash
-   # Create Python virtual environment
-   python -m venv venv
-   . venv/Scripts/Activate.ps1
+# Install Terraform and initialize
+powershell -ExecutionPolicy Bypass -File .\scripts\install_terraform.ps1
 
-   # Install packages
-   pip install -r thai-letters/requirements.txt
-   pip install paddlepaddle paddleocr boto3 sagemaker terraform
-   ```
+# Set up Python environment
+powershell -ExecutionPolicy Bypass -File .\scripts\setup_env.ps1
+powershell -ExecutionPolicy Bypass -File .\scripts\install_deps.ps1
+```
 
-3. Generate or prepare your dataset:
-   ```bash
-   python thai-letters/quick_phase1_generator.py --output synthetic_data/ --count 1000 --fonts path/to/fonts
-   python thai-letters/phase1_paddleocr_converter.py --input-path thai_dataset_... --output-path train_data_thai_paddleocr_...
-   ```
+### 2. Verify Dataset (Already Available)
+```powershell
+cd thai-letters\train_data_thai_phase1_0729_1331\train_data\rec
 
-4. Train locally:
-   ```bash
-   python PaddleOCR/tools/train.py -c configs/rec/thai_rec.yml -o Global.epoch_num=50
-   ```
+# Check training samples
+Get-Content rec_gt_train.txt | Measure-Object -Line  # Should show 3117
 
-5. Deploy on AWS SageMaker:
-   - Build and push Docker image to ECR
-   - Provision AWS resources via Terraform
-   - Trigger training with Lambda or SageMaker SDK
+# Check validation samples  
+Get-Content rec_gt_val.txt | Measure-Object -Line    # Should show 753
+```
+
+### 3. Next Steps - Model Training
+```bash
+# Configure PaddleOCR for Thai (upcoming)
+# Train locally or on SageMaker
+# Deploy trained model
+```
 
 ## Documentation Links
 

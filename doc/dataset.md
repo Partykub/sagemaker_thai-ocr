@@ -1,48 +1,74 @@
 # Dataset Generation & Conversion
 
-This guide describes how to generate synthetic Thai OCR data, annotate real data, and convert datasets to PaddleOCR format.
+This guide describes how to generate synthetic Thai OCR data for PaddleOCR training.
+
+## Current Dataset Status
+
+✅ **Ready-to-Use Dataset**: `thai-letters/train_data_thai_phase1_0729_1331/`
+- **Training samples**: 3,117 images with Thai text labels
+- **Validation samples**: 753 images with Thai text labels  
+- **Total**: 3,870 synthetic Thai OCR images
+- **Format**: PaddleOCR standard format
+- **Content**: Thai characters and syllables with various fonts and augmentations
 
 ## Data Generation
 
-### 1. Synthetic Data Generation
+### 1. Synthetic Data Generation (Completed)
 
-Scripts:
-- `thai-letters/quick_phase1_generator.py`  – Quick synthetic data generation
-- `thai-letters/quick_thai_generator.py`    – Alternate generator
+**Primary Script**: `thai-letters/quick_phase1_generator.py`
+- Generates Thai characters and syllables with multiple fonts
+- Applies random augmentations (obstacles, noise, distortions)
+- Creates PaddleOCR-compatible dataset structure
+
+**Generation Command**:
+```bash
+cd thai-letters
+python quick_phase1_generator.py
+```
+
+**Output Structure**:
+```
+train_data_thai_phase1_0729_1331/
+├── train_data/
+│   └── rec/
+│       ├── rec_gt_train.txt        # Training labels (3,117 samples)
+│       ├── rec_gt_val.txt          # Validation labels (753 samples)
+│       └── thai_data/
+│           ├── train/              # Training images
+│           └── val/                # Validation images
+└── PHASE1_DATASET_REPORT.md        # Generation summary
+```
+
+### 2. Label Format
+
+**PaddleOCR Standard Format**:
+```
+thai_data/train/000_00.jpg	บิ
+thai_data/train/000_01.jpg	บิ
+thai_data/train/001_00.jpg	ร่ำ
+```
+
+Each line: `relative_image_path[TAB]thai_text`
+
+## Alternative Scripts (Legacy)
+
 - `thai-letters/thai_dataset_generator.py`  – Comprehensive generator
+- `thai-letters/quick_thai_generator.py`    – Alternate generator
+- `thai-letters/phase1_paddleocr_converter.py` – Format converter
 
-Usage:
+## Dataset Verification
+
+To verify the current dataset:
 ```bash
-python thai-letters/quick_phase1_generator.py --output synthetic_data/ --count 1000 --fonts path/to/fonts
-```
+cd thai-letters/train_data_thai_phase1_0729_1331/train_data/rec
 
-### 2. Real Data Annotation
+# Count training samples
+Get-Content rec_gt_train.txt | Measure-Object -Line
 
-Use your annotated dataset:
-- `thai-letters/thai_dataset_comprehensive_30samples_0722_1551/`
-- `thai-letters/thai_dataset_minimal_5samples_0724_1154/`
+# Count validation samples  
+Get-Content rec_gt_val.txt | Measure-Object -Line
 
-Format:
-```
-image/{id}.jpg \t x1,y1,x2,y2,x3,y3,x4,y4,text
-```
-
-## Conversion to PaddleOCR Format
-
-### Scripts
-- `thai-letters/phase1_paddleocr_converter.py`
-- `thai-letters/quick_phase1_converter.py`
-
-Usage:
-```bash
-python thai-letters/phase1_paddleocr_converter.py --input-path thai_dataset_comprehensive_30samples_0722_1551/ --output-path train_data_thai_paddleocr_0724_1157/
-```
-
-Structure:
-```
-train_data_thai_paddleocr_0724_1157/
-├── image/
-├── label/
-├── train_list.txt
-└── val_list.txt
+# Check image files
+Get-ChildItem thai_data/train/*.jpg | Measure-Object
+Get-ChildItem thai_data/val/*.jpg | Measure-Object
 ```
