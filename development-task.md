@@ -32,8 +32,11 @@ This file outlines the key development tasks for the Thai OCR project, based on 
 
 ## 4. Model Training
 
-- [ ] Local training
-  - `python PaddleOCR/tools/train.py -c configs/rec/thai_rec.yml`
+- [ ] Local training (CPU-only for testing - RTX 5090/CUDA 12.8 not supported)
+  - Clone PaddleOCR: `git clone https://github.com/PaddlePaddle/PaddleOCR.git`
+  - Set CPU mode: `set CUDA_VISIBLE_DEVICES=`
+  - Test training: `python PaddleOCR/tools/train.py -c configs/rec/thai_svtr_tiny_config.yml`
+  - Run few epochs only to verify config and data format
 - [ ] SageMaker training
   - Upload data to S3 (`s3://<bucket>/data/training/`)
   - Build and push Docker image to ECR
