@@ -1,0 +1,51 @@
+# GitHub Copilot Instructions for Thai OCR Project
+
+This file provides key context and guidance for GitHub Copilot to assist with code suggestions and completions across the Thai OCR project.
+
+## Project Overview
+
+- Objective: Build a robust OCR engine for Thai language using PaddleOCR, with support for custom training, AWS SageMaker deployment, and Terraform-managed infrastructure.
+- Main components:
+  - **thai-letters/**: Python and batch scripts for synthetic and real Thai text image generation and annotation.
+  - **train_data_thai_paddleocr_.../**: Converted dataset ready for PaddleOCR training (image/, label/, train_list.txt, val_list.txt).
+  - **configs/**: YAML configuration files for detection and recognition models (e.g., `thai_svtr_tiny_config.yml`).
+  - **ppocr/utils/dict/**: Thai character dictionary (`th_dict.txt`).
+  - **doc/**: Documentation in Markdown:
+    - `overview.md`, `installation.md`, `dataset.md`, `training.md`, `deployment.md`, `terraform.md`
+  - **.github/copilot-instaction**: This instruction file.
+
+## Usage Context
+
+- **Data Generation**: Generate and preprocess Thai OCR data.
+- **Dataset Conversion**: Convert annotated images to PaddleOCR format.
+- **Model Training**:
+  - Local training using `PaddleOCR/tools/train.py` and custom config.
+  - SageMaker training via AWS Lambda or Step Functions, containerized in Docker, pushed to ECR, and triggered by Terraform-managed Lambda.
+- **Inference & Deployment**:
+  - Local inference using Python scripts and PaddleOCR API.
+  - Real-time and batch inference via SageMaker endpoints.
+- **Infrastructure as Code**:
+  - Terraform scripts to create S3 buckets, ECR repos, IAM roles, Lambda functions, and SageMaker resources.
+
+## Copilot Guidance
+
+When generating code or edits, consider:
+
+1. **Consistent Paths**: Use absolute or project-root-relative paths for data, configs, and model artifacts.
+2. **Modular Scripts**: Keep data generation, conversion, training, and inference in separate modules or scripts.
+3. **AWS Integration**: Follow best practices for AWS SDK calls, resource tagging, and error handling.
+4. **Terraform Structure**: Group resources by function (S3, ECR, IAM, Lambda) with clear naming conventions.
+5. **Documentation Alignment**: Maintain consistency with `doc/` markdown files when referencing steps or commands.
+6. **Coding Standards**: Use clear function names, docstrings, and logging for readability and maintainability.
+
+## Common Tasks
+
+- Create or update data generator in `thai-letters/`
+- Update or extend PaddleOCR configs under `configs/rec/`
+- Implement SageMaker training script and Lambda handler in root or `scripts/`
+- Add Terraform modules or resources for new AWS components
+- Enhance documentation under `doc/`
+
+---
+
+_End of Copilot instructions._
