@@ -13,7 +13,7 @@ This file outlines the key development tasks for the Thai OCR project, based on 
 
 ## 2. Data Preparation
 
-- [ ] Generate synthetic Thai OCR data
+- [x] Generate synthetic Thai OCR data
   - `thai-letters/quick_phase1_generator.py`
   - `thai-letters/thai_dataset_generator.py`
 - [ ] Annotate or collect real Thai document images

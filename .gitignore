@@ -13,6 +13,7 @@ env/
 
 # PaddleOCR dataset outputs
 train_data_thai_paddleocr_*/
+train_data_thai_phase1_*/
 thai_dataset_comprehensive_*/
 thai_dataset_minimal_*/
 synthetic_data/
