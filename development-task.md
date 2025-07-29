@@ -9,7 +9,7 @@ This file outlines the key development tasks for the Thai OCR project, based on 
   - `pip install -r thai-letters/requirements.txt`
   - `pip install paddlepaddle paddleocr boto3 sagemaker`
 - [x] Configure AWS CLI credentials and permissions
-- [ ] Install Terraform and initialize project
+- [x] Install Terraform and initialize project
 
 ## 2. Data Preparation
 

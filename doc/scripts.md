@@ -49,4 +49,20 @@ This document describes the purpose and usage of each custom script in the `scri
   3. Verifies setup using `aws sts get-caller-identity`, `aws s3 ls`, and `aws sagemaker list-training-jobs`.
   4. Exits with an error if any verification command fails.
 
+---
+
+## install_terraform.ps1
+
+- **Location:** `scripts/install_terraform.ps1`
+- **Purpose:** Install Terraform CLI (via Chocolatey) if not present and initialize the Terraform project.
+- **Usage:**
+  ```powershell
+  powershell -ExecutionPolicy Bypass -File .\scripts\install_terraform.ps1
+  ```
+- **Behavior:**
+  1. Checks for `terraform` command; if missing, attempts to install via Chocolatey.
+  2. If Chocolatey is not installed, prompts to install it manually.
+  3. Runs `terraform init` to download providers and set up the working directory.
+  4. Exits with an error code if any step fails.
+
 Keep this file updated when adding or modifying scripts in `scripts/`.
