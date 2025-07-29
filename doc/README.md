@@ -11,4 +11,5 @@ Welcome to the documentation for the Thai OCR project. This guide will help you 
 - [Model Deployment & Inference](deployment.md)
  - [Infrastructure as Code (Terraform)](terraform.md)
  - [Project Structure & File Organization](structure.md)
+ - [Script Reference](scripts.md)
 - [License](LICENSE)

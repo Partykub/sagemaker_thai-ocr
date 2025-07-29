@@ -63,6 +63,7 @@ sagemaker_ocr_thai/                # Project root
 - [Deployment & Inference](doc/deployment.md)
  - [Terraform Infrastructure](doc/terraform.md)
  - [Project Structure & File Organization](doc/structure.md)
+ - [Script Reference](doc/scripts.md)
 
 ## License
 
