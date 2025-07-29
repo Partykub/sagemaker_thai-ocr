@@ -45,6 +45,7 @@ When generating code or edits, consider:
 - Implement SageMaker training script and Lambda handler in root or `scripts/`
 - Add Terraform modules or resources for new AWS components
 - Enhance documentation under `doc/`
+- Update `doc/scripts.md` whenever a new file is added to the `scripts/` directory
 
 ---
 

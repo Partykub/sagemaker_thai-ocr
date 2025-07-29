@@ -37,3 +37,4 @@ This document outlines the recommended directory layout and file placement for t
 3. **Version Control**: Track changes in `configs/` and `scripts/` actively; avoid committing large datasets (use `.gitignore`).  
 4. **Documentation**: Update `doc/structure.md` whenever adding new directories or moving files.  
 5. **Reusability**: Scripts in `scripts/` should accept CLI arguments for paths and hyperparameters to support both local and cloud usage.  
+6. **Script Documentation**: Whenever a new file is added to the `scripts/` directory, update `doc/scripts.md` to include its purpose and usage.
