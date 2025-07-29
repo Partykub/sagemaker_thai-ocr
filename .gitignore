@@ -50,3 +50,6 @@ logs/
 
 # Windows
 Thumbs.db
+
+#PaddleOCR
+.PaddleOCR/
