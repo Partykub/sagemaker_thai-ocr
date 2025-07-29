@@ -16,7 +16,17 @@ train_data_thai_paddleocr_*/
 train_data_thai_phase1_*/
 thai_dataset_comprehensive_*/
 thai_dataset_minimal_*/
+thai_dataset_*samples*/
 synthetic_data/
+
+# Generated images and training data
+*.jpg
+*.png
+*.jpeg
+rec_gt_*.txt
+labels.txt
+dataset_details.json
+th_corpus.txt
 
 # Model artifacts and logs
 output/
