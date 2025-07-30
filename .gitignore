@@ -195,7 +195,17 @@ aws-exports.js
 
 # Machine Learning / AI specific
 # Dataset directories
-datasets/
+
+# Keep folder structure but ignore all contents
+thai-letters/datasets/converted/*
+thai-letters/datasets/raw/*
+thai-letters/datasets/samples/*
+
+# Keep the README.md files in each folder
+!thai-letters/datasets/converted/README.md
+!thai-letters/datasets/raw/README.md
+!thai-letters/datasets/samples/README.md
+
 data/
 train_data_*/
 synthetic_data_*/
