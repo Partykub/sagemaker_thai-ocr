@@ -36,10 +36,17 @@ This file outlines the key development tasks for the Thai OCR project, based on 
 
 ## 3. Configuration
 
-- [ ] Copy and customize PaddleOCR config for Thai recognition
-  - `configs/rec/thai_rec.yml` or `thai_svtr_tiny_config.yml`
-- [ ] Update `character_dict_path` to use `th_dict.txt`
-- [ ] Adjust hyperparameters (epochs, batch size, learning rate)
+- [x] Copy and customize PaddleOCR config for Thai recognition ✅
+  - **Generated 3 configs**: `thai_rec.yml`, `thai_rec_dev.yml`, `thai_rec_prod.yml`
+  - **Source**: `thai_svtr_tiny_config.yml` from dataset
+  - **Location**: `configs/rec/`
+- [x] Update `character_dict_path` to use `th_dict.txt` ✅
+  - **Path**: `thai-letters/datasets/converted/train_data_thai_paddleocr_0730_1648/train_data/th_dict.txt`
+  - **Characters**: 880 Thai characters
+- [x] Adjust hyperparameters (epochs, batch size, learning rate) ✅
+  - **Dev config**: 10 epochs, batch 64, lr 0.001
+  - **Main config**: 100 epochs, batch 128, lr 0.001
+  - **Prod config**: 200 epochs, batch 256, lr 0.0005
 
 ## 4. Model Training
 

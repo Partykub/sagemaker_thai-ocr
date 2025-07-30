@@ -92,6 +92,43 @@ chmod +x scripts/infrastructure/deploy.sh
 
 ---
 
+### Training Configuration Scripts
+
+#### `scripts/training/setup_training_config.py`
+**Purpose**: Setup and configure PaddleOCR training configurations for Thai OCR
+
+**Description**: 
+- Automatically discovers latest converted dataset
+- Creates multiple training configurations (dev, main, prod)
+- Updates dictionary paths and data directories
+- Adjusts hyperparameters for different training scenarios
+
+**Usage**:
+```bash
+# Run Task 3: Configuration setup
+python scripts/training/setup_training_config.py
+
+# Output: configs/rec/ directory with 3 config files
+# - thai_rec_dev.yml: 10 epochs for quick testing
+# - thai_rec.yml: 100 epochs for main training
+# - thai_rec_prod.yml: 200 epochs for production
+```
+
+**When to use**:
+- After completing data preparation (Task 2)
+- Before starting local or SageMaker training (Task 4)
+- When you need different training configurations
+- Setting up new training environments
+
+**Key Features**:
+- ✅ Automatic dataset discovery and path configuration
+- ✅ Character dictionary path updates (th_dict.txt)
+- ✅ Multiple hyperparameter configurations
+- ✅ Data validation and verification
+- ✅ Comprehensive completion report generation
+
+---
+
 ### Machine Learning Scripts
 
 #### `scripts/ml/sagemaker_trainer.py`
