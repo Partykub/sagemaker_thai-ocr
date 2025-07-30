@@ -1,0 +1,34 @@
+{
+  "sts": {
+    "status": "SUCCESS",
+    "account": "484468818942",
+    "user": "AROAXBTEXQP7L3F7SEGEM:ratchanonk@bbtvnewmedia.com"
+  },
+  "s3": {
+    "status": "SUCCESS",
+    "paddleocr_buckets": [
+      "paddleocr-thai-7dbf78fc",
+      "paddleocr-thai-apse1-20250124",
+      "paddleocr-thai-training-dataset"
+    ],
+    "total_buckets": 8
+  },
+  "iam": {
+    "status": "SUCCESS",
+    "paddleocr_roles": [
+      "paddleocr-sagemaker-role-7dbf78fc"
+    ],
+    "total_roles": 43
+  },
+  "ecr": {
+    "status": "SUCCESS",
+    "paddleocr_repositories": [
+      "paddleocr-thai"
+    ],
+    "total_repositories": 2
+  },
+  "sagemaker": {
+    "status": "SUCCESS",
+    "recent_training_jobs": 0
+  }
+}

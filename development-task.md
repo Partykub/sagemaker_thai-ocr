@@ -4,12 +4,12 @@ This file outlines the key development tasks for the Thai OCR project, based on 
 
 ## 1. Environment & Setup
 
-- [ ] Create and activate Python virtual environment
-- [ ] Install project dependencies
+- [x] Create and activate Python virtual environment
+- [x] Install project dependencies
   - `pip install -r thai-letters/requirements.txt`
   - `pip install paddlepaddle paddleocr boto3 sagemaker`
-- [ ] Configure AWS CLI credentials and permissions
-- [ ] Install Terraform and initialize project
+- [x] Configure AWS CLI credentials and permissions
+- [x] Install Terraform and initialize project
 
 ## 2. Data Preparation
 
@@ -59,6 +59,8 @@ This file outlines the key development tasks for the Thai OCR project, based on 
 
 - [ ] Keep `doc/` files up to date:
   - `overview.md`, `installation.md`, `dataset.md`, `training.md`, `deployment.md`, `terraform.md`
+  - **`scripts.md`** - Document all automation scripts with usage examples
 - [ ] Update top-level `README.md` and `development-task.md`
-- [ ] Review and refine GitHub Copilot instructions (`.github/copilot-instaction`)
+- [ ] Review and refine GitHub Copilot instructions (`.github/copilot-instructions.md`)
+- [ ] **CRITICAL**: Update `doc/scripts.md` whenever creating or modifying scripts
 - [ ] Plan next feature or improvements (e.g., more fonts, advanced augmentation)

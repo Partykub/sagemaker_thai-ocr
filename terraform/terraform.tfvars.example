@@ -1,0 +1,8 @@
+# Terraform Variables for Thai OCR Project
+# These values align with the required_permissions.json
+
+project_id  = "paddleocr"
+environment = "dev"
+aws_region  = "ap-southeast-1"
+owner       = "partykub"
+cost_center = "ml-research"

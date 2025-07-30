@@ -7,13 +7,82 @@ This file provides comprehensive context and guidance for GitHub Copilot to assi
 - **Objective**: Build a robust OCR engine for Thai language using PaddleOCR, with support for custom training, AWS SageMaker deployment, and Terraform-managed infrastructure.
 - **Main Components**:
   - **thai-letters/**: Python and batch scripts for synthetic and real Thai text image generation and annotation
-  - **train_data_thai_paddleocr_.../**: Converted dataset ready for PaddleOCR training (image/, label/, train_list.txt, val_list.txt)
-  - **configs/**: YAML configuration files for detection and recognition models (e.g., `thai_svtr_tiny_config.yml`)
-  - **ppocr/utils/dict/**: Thai character dictionary (`th_dict.txt`)
-  - **doc/**: Comprehensive documentation in Markdown format
+  - **scripts/**: Automation and management scripts for AWS operations, training, and deployment
   - **terraform/**: Infrastructure as Code for AWS resources
-  - **scripts/**: Utility and deployment scripts
-  - **.github/copilot-instructions.md**: This instruction file
+  - **doc/**: Comprehensive documentation in Markdown format
+  - **test_aws_permissions.py**: AWS permissions validation
+  - **required_permissions.json**: AWS security policies
+
+## CRITICAL RULE: Documentation Updates
+
+**MANDATORY**: Every time you create or modify a script, you MUST:
+
+1. **Update `doc/scripts.md`** with complete script details:
+   - Purpose and description
+   - Usage examples (command line and programmatic)
+   - When to use the script
+   - Key features and integration points
+
+2. **Update related documentation**:
+   - `README.md` if script is user-facing
+   - `doc/overview.md` for project structure changes
+   - `development-task.md` if part of workflow
+
+3. **Follow documentation template**:
+```markdown
+#### `scripts/path/script_name.py`
+**Purpose**: Brief description
+
+**Description**: 
+- Detailed explanation
+- Key capabilities
+- Integration points
+
+**Usage**:
+```bash
+# Command examples
+python scripts/path/script_name.py
+```
+
+**When to use**:
+- Specific scenarios
+- Use cases
+
+**Key Features**:
+- ✅ Feature 1
+- ✅ Feature 2
+```
+
+## Script Organization Standards
+
+### Folder Structure
+```
+scripts/
+├── infrastructure/          # AWS resource management
+│   ├── aws_manager.py      # Main AWS resource manager
+│   └── deploy.sh           # Deployment automation
+├── ml/                     # Machine learning operations
+│   ├── sagemaker_trainer.py # SageMaker training jobs
+│   └── inference/          # Inference scripts
+├── testing/                # Testing and validation
+│   └── test_permissions.py # Permission validation
+└── utils/                  # Utility scripts
+    ├── data_helpers.py     # Data processing
+    └── monitoring.py       # Monitoring helpers
+```
+
+### Security & AWS Requirements
+
+**AWS Resource Naming**: All resources MUST start with `paddleocr-`
+- Account ID: `484468818942`
+- Default region: `ap-southeast-1`
+- Follow permissions in `required_permissions.json`
+
+**Example**:
+```python
+bucket_name = f"paddleocr-{environment}-data-{suffix}"
+role_name = f"paddleocr-{environment}-sagemaker-role"
+```
 
 ## Directory Structure Rules
 
