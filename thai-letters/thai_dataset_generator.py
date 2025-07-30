@@ -22,7 +22,8 @@ class OptimizedThaiGenerator:
         
         # ฟอนต์และขนาด
         self.font_path = self._find_tahoma_font()
-        self.font_sizes = [44, 48, 52, 56]
+        # ขนาด font ที่หลากหลาย (เพิ่มขนาดใหญ่ขึ้น)
+        self.font_sizes = [36, 42, 48, 54, 60, 66, 72]
         
         # อุปสรรคที่เหมาะสม (ลดจาก 15 เหลือ 8 ประเภท)
         self.obstacles = {
@@ -67,16 +68,37 @@ class OptimizedThaiGenerator:
         os.makedirs(os.path.join(output_dir, "images"), exist_ok=True)
         
     def _find_tahoma_font(self):
-        """ค้นหา Tahoma font"""
+        """ค้นหา font ที่รองรับภาษาไทย"""
+        # Font paths สำหรับ Thai support ในระบบต่างๆ
         paths = [
+            # Windows fonts (via WSL)
+            "/mnt/c/Windows/Fonts/tahoma.ttf",
+            "/mnt/c/Windows/Fonts/Tahoma.ttf",
+            "/mnt/c/Windows/Fonts/THSarabun.ttf",
+            "/mnt/c/Windows/Fonts/thsarabun.ttf",
+            # Standard Windows paths
             "C:/Windows/Fonts/tahoma.ttf",
             "C:/Windows/Fonts/Tahoma.ttf",
+            "C:/Windows/Fonts/THSarabun.ttf",
+            # macOS
             "/System/Library/Fonts/Tahoma.ttf",
+            "/System/Library/Fonts/Arial Unicode MS.ttf",
+            # Linux system fonts
+            "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+            "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf",
+            "/usr/share/fonts/TTF/DejaVuSans.ttf",
+            # Thai fonts in Linux
+            "/usr/share/fonts/truetype/thai/TlwgMono.ttf",
+            "/usr/share/fonts/truetype/thai/Loma.ttf",
+            "/usr/share/fonts/truetype/thai/Norasi.ttf",
         ]
         
         for path in paths:
             if os.path.exists(path):
+                print(f"🔤 Found font: {path}")
                 return path
+        
+        print("⚠️ No Thai-compatible font found, using default")
         return None
         
     def _load_characters(self, dict_path):
@@ -379,7 +401,11 @@ def main():
     # สร้างชื่อ output directory อัตโนมัติ
     if args.output is None:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M")
-        args.output = f"thai_dataset_{args.samples}samples_{timestamp}"
+        dataset_name = f"thai_dataset_{args.samples}samples_{timestamp}"
+        # เก็บใน datasets/raw/ directory (default สำหรับการใช้งานอัตโนมัติ)
+        os.makedirs("datasets/raw", exist_ok=True)
+        args.output = f"datasets/raw/{dataset_name}"
+    # หากผู้ใช้ระบุ output path มาเอง ใช้ตามนั้น
     
     print(f"🎯 Creating optimized dataset: {args.samples} samples per character")
     print(f"📖 Dictionary: {args.dict}")

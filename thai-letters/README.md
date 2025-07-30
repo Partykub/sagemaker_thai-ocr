@@ -104,11 +104,29 @@ python thai_dataset_quick.py 10
 thai_dataset_quick.bat
 ```
 
-## 📁 Output Structure
+## 📁 Output Structure (Organized)
 
-### Original Dataset Format:
+### 📂 New Organized Directory Structure:
 ```
-thai_dataset_standard_10samples_0722_1234/
+thai-letters/
+├── datasets/                    # 🎯 โฟลเดอร์เก็บ datasets ทั้งหมด
+│   ├── raw/                     # Dataset ดิบที่สร้างใหม่
+│   │   ├── thai_dataset_minimal_3samples_[timestamp]/
+│   │   ├── thai_dataset_standard_10samples_[timestamp]/
+│   │   └── thai_dataset_comprehensive_30samples_[timestamp]/
+│   ├── converted/               # Dataset ที่แปลงเป็น PaddleOCR format แล้ว
+│   │   └── train_data_thai_paddleocr_[timestamp]/
+│   └── samples/                 # Dataset ตัวอย่างขนาดเล็ก
+│       └── sample_dataset_100chars/
+├── scripts/                     # Scripts สำหรับสร้าง dataset
+│   └── dataset_manager.py       # จัดการ datasets (อนาคต)
+├── README.md
+└── requirements.txt
+```
+
+### Original Dataset Format (in datasets/raw/):
+```
+datasets/raw/thai_dataset_standard_10samples_0730_1234/
 ├── images/
 │   ├── 000_00.jpg    # Character 1, Sample 1
 │   ├── 000_01.jpg    # Character 1, Sample 2
@@ -117,9 +135,9 @@ thai_dataset_standard_10samples_0722_1234/
 └── optimized_dataset_details.json  # Statistics & config
 ```
 
-### PaddleOCR Training Format (After Conversion):
+### PaddleOCR Training Format (in datasets/converted/):
 ```
-train_data_thai_paddleocr_0722_1234/
+datasets/converted/train_data_thai_paddleocr_0730_1234/
 ├── train_data/
 │   ├── rec/
 │   │   ├── thai_data/

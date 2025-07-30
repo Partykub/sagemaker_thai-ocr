@@ -31,8 +31,9 @@ class PaddleOCRDatasetConverter:
         self.train_val_split = train_val_split
         self.timestamp = datetime.now().strftime("%m%d_%H%M")
         
-        # Output directory ตาม PaddleOCR standard
-        self.output_dir = Path(f"train_data_thai_paddleocr_{self.timestamp}")
+        # Output directory ตาม PaddleOCR standard (เก็บใน datasets/converted/)
+        os.makedirs("datasets/converted", exist_ok=True)
+        self.output_dir = Path(f"datasets/converted/train_data_thai_paddleocr_{self.timestamp}")
         
         # Statistics
         self.stats = {

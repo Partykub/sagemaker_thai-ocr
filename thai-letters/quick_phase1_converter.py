@@ -13,12 +13,13 @@ from pathlib import Path
 from phase1_paddleocr_converter import PaddleOCRDatasetConverter
 
 def find_existing_datasets():
-    """หา dataset ที่มีอยู่ใน thai-letters/"""
+    """หา dataset ที่มีอยู่ใน thai-letters/ และ datasets/raw/"""
     current_dir = Path(__file__).parent
     datasets = []
     
+    # ค้นหาใน thai-letters/ (legacy datasets)
     for item in current_dir.iterdir():
-        if item.is_dir():
+        if item.is_dir() and item.name not in ['datasets', 'scripts', '__pycache__']:
             # Check multiple patterns for dataset directories
             is_dataset = (
                 item.name.startswith("thai_dataset") or
@@ -37,6 +38,19 @@ def find_existing_datasets():
                     if jpg_files:
                         datasets.append(item)
     
+    # ค้นหาใน datasets/raw/ (new organized structure)
+    raw_dir = current_dir / "datasets" / "raw"
+    if raw_dir.exists():
+        for item in raw_dir.iterdir():
+            if item.is_dir():
+                # Check if it has required files
+                if (item / "labels.txt").exists() and (item / "images").exists():
+                    datasets.append(item)
+                elif (item / "labels.txt").exists():
+                    jpg_files = list(item.rglob("*.jpg"))
+                    if jpg_files:
+                        datasets.append(item)
+    
     return datasets
 
 def show_menu(datasets):
@@ -45,7 +59,10 @@ def show_menu(datasets):
     print("=" * 60)
     
     if not datasets:
-        print("❌ No existing Thai datasets found in thai-letters/")
+        print("❌ No existing Thai datasets found!")
+        print("📍 Searched in:")
+        print("   • thai-letters/ (legacy location)")
+        print("   • datasets/raw/ (organized location)")
         print("💡 Please generate a dataset first using:")
         print("   python thai_dataset_quick.py 10")
         return None

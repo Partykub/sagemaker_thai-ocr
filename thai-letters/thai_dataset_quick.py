@@ -59,8 +59,9 @@ def validate_samples(samples_str):
         return None
 
 def generate_output_name(samples):
-    """สร้างชื่อ output folder อัตโนมัติ"""
+    """สร้างชื่อ output folder อัตโนมัติ (เก็บใน datasets/raw/)"""
     from datetime import datetime
+    import os
     timestamp = datetime.now().strftime("%m%d_%H%M")
     
     if samples <= 5:
@@ -72,12 +73,17 @@ def generate_output_name(samples):
     else:
         category = "production"
     
-    return f"thai_dataset_{category}_{samples}samples_{timestamp}"
+    # สร้าง datasets/raw directory
+    os.makedirs("datasets/raw", exist_ok=True)
+    
+    # ส่งคืน path ที่อยู่ใน datasets/raw/
+    dataset_name = f"thai_dataset_{category}_{samples}samples_{timestamp}"
+    return f"datasets/raw/{dataset_name}"
 
 def run_generator(samples, output_dir):
     """เรียกใช้ main dataset generator"""
     command = [
-        "python", 
+        "python3", 
         "thai_dataset_generator.py", 
         str(samples),
         "-d", "th_dict.txt",
