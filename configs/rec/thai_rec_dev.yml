@@ -1,5 +1,5 @@
 Global:
-  use_gpu: True
+  use_gpu: False
   epoch_num: 10
   log_smooth_window: 20
   print_batch_step: 10
@@ -9,12 +9,12 @@ Global:
     - 0
     - 2000
   cal_metric_during_train: True
-  pretrained_model: None
-  checkpoints: None
+  pretrained_model: 
+  checkpoints:
   save_inference_dir: None
   use_visualdl: False
   infer_img: None
-  character_dict_path: thai-letters/datasets/converted/train_data_thai_paddleocr_0730_1648/train_data/th_dict.txt
+  character_dict_path: /home/partykub/workspace/Documents/sagemaker_thai-ocr/thai-letters/datasets/converted/train_data_thai_paddleocr_0730_1648/train_data/th_dict.txt
   character_type: thai
   max_text_length: 25
   infer_mode: False
@@ -35,7 +35,7 @@ Optimizer:
 Architecture:
   model_type: rec
   algorithm: SVTR_LCNet
-  Transform: None
+  Transform:
   Backbone:
     name: SVTRNet
     img_size:
@@ -75,6 +75,9 @@ Architecture:
       - [7, 11]
     last_stage: True
     prenorm: False
+  Neck:
+    name: SequenceEncoder
+    encoder_type: reshape
   Head:
     name: CTCHead
     fc_decay: 1e-05
@@ -88,28 +91,17 @@ Metric:
 Train:
   dataset:
     name: SimpleDataSet
-    data_dir: thai-letters/datasets/converted/train_data_thai_paddleocr_0730_1648/train_data/rec/thai_data/
+    data_dir: /home/partykub/workspace/Documents/sagemaker_thai-ocr/thai-letters/datasets/converted/train_data_thai_paddleocr_0730_1648/train_data/rec/
     ext_op_transform_idx: 1
     label_file_list:
-      - thai-letters/datasets/converted/train_data_thai_paddleocr_0730_1648/train_data/rec/rec_gt_train.txt
+      - /home/partykub/workspace/Documents/sagemaker_thai-ocr/thai-letters/datasets/converted/train_data_thai_paddleocr_0730_1648/train_data/rec/rec_gt_train.txt
     transforms:
       -
         DecodeImage:
           img_mode: BGR
           channel_first: False
       -
-        RecConAug:
-          prob: 0.5
-          ext_data_num: 2
-          image_shape:
-            - 48
-            - 320
-            - 3
-          max_text_length: 25
-      -
-        RecAug:
-      -
-        MultiLabelEncode:
+        CTCLabelEncode:
       -
         RecResizeImg:
           image_shape:
@@ -122,7 +114,6 @@ Train:
             - image
             - label
             - length
-            - valid_ratio
   loader:
     shuffle: True
     batch_size_per_card: 64
@@ -131,16 +122,16 @@ Train:
 Eval:
   dataset:
     name: SimpleDataSet
-    data_dir: thai-letters/datasets/converted/train_data_thai_paddleocr_0730_1648/train_data/rec/thai_data/
+    data_dir: /home/partykub/workspace/Documents/sagemaker_thai-ocr/thai-letters/datasets/converted/train_data_thai_paddleocr_0730_1648/train_data/rec/
     label_file_list:
-      - thai-letters/datasets/converted/train_data_thai_paddleocr_0730_1648/train_data/rec/rec_gt_val.txt
+      - /home/partykub/workspace/Documents/sagemaker_thai-ocr/thai-letters/datasets/converted/train_data_thai_paddleocr_0730_1648/train_data/rec/rec_gt_val.txt
     transforms:
       -
         DecodeImage:
           img_mode: BGR
           channel_first: False
       -
-        MultiLabelEncode:
+        CTCLabelEncode:
       -
         RecResizeImg:
           image_shape:
@@ -153,7 +144,6 @@ Eval:
             - image
             - label
             - length
-            - valid_ratio
   loader:
     shuffle: False
     drop_last: False

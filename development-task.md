@@ -50,8 +50,11 @@ This file outlines the key development tasks for the Thai OCR project, based on 
 
 ## 4. Model Training
 
-- [ ] Local training
-  - `python PaddleOCR/tools/train.py -c configs/rec/thai_rec.yml`
+- [x] Local training ✅
+  - **Script**: `python scripts/training/run_local_training.py --config dev --gpu false`
+  - **Config**: `configs/rec/thai_rec_dev.yml` (10 epochs, batch 64, CPU training)
+  - **Status**: Successfully started training process
+  - **Dependencies**: PaddlePaddle 3.1.0 (CPU), PaddleOCR, all required packages
 - [ ] SageMaker training
   - Upload data to S3 (`s3://<bucket>/data/training/`)
   - Build and push Docker image to ECR
