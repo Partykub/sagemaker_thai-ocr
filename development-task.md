@@ -55,27 +55,66 @@ This file outlines the key development tasks for the Thai OCR project, based on 
   - **Config**: `configs/rec/thai_rec_dev.yml` (10 epochs, batch 64, CPU training)
   - **Status**: Successfully started training process
   - **Dependencies**: PaddlePaddle 3.1.0 (CPU), PaddleOCR, all required packages
-- [ ] SageMaker training
-  - Upload data to S3 (`s3://<bucket>/data/training/`)
-  - Build and push Docker image to ECR
-  - Configure and run training job via Lambda or Step Functions
-  - Monitor job status and logs
+- [ ] SageMaker training (ด้วย Terraform)
+  - **เตรียมข้อมูล**: Upload training data to S3 bucket (ใช้ AWS CLI หรือ boto3)
+  - **สร้าง Docker image**: Build และ push PaddleOCR training image ไปยัง ECR
+  - **กำหนดค่า Terraform**: เพิ่ม SageMaker Training Job resource
+  - **รัน Terraform**: `terraform plan` และ `terraform apply` เพื่อสร้าง training job
+  - **Monitor**: ติดตาม training job status ผ่าน AWS Console หรือ CLI
 
-## 5. Infrastructure as Code
+## 5. Infrastructure as Code (Terraform)
 
-- [ ] Define Terraform variables (`project_id`, `environment`, `aws_region`)
-- [ ] Provision S3 bucket for data and models
-- [ ] Provision ECR repository for Docker image
-- [ ] Create IAM roles and policies for SageMaker and Lambda
-- [ ] Deploy Lambda function to start SageMaker training
-- [ ] Apply Terraform configuration (`terraform init`, `plan`, `apply`)
+- [x] Define Terraform variables (`project_id`, `environment`, `aws_region`) ✅
+- [x] Provision S3 bucket for data and models ✅
+- [x] Provision ECR repository for Docker image ✅
+- [x] Create IAM roles and policies for SageMaker ✅
+- [ ] **เพิ่ม SageMaker Training Job resource** ใน `terraform/resources.tf`:
+  - `aws_sagemaker_training_job` สำหรับ Thai OCR training
+  - Training configuration (instance type, hyperparameters, S3 paths)
+  - Output configuration สำหรับ model artifacts
+- [ ] **เพิ่ม training variables** ใน `terraform/variables.tf`:
+  - `training_instance_type` (default: `ml.m5.large`)
+  - `training_epochs`, `training_batch_size`, `training_learning_rate`
+  - `max_training_time` สำหรับ stopping condition
+- [ ] **อัปเดต terraform.tfvars** ด้วยค่า training parameters
+- [ ] **เตรียมข้อมูลการ training**:
+  - Upload training data ไปยัง S3: `aws s3 sync thai-letters/datasets/converted/ s3://[bucket]/data/training/`
+  - Build Docker image: `docker build -t thai-ocr-training .`
+  - Push to ECR: `docker tag thai-ocr-training:latest [ecr-uri]:latest && docker push [ecr-uri]:latest`
+- [ ] **รัน Terraform สำหรับ SageMaker Training**:
+  ```bash
+  cd terraform/
+  terraform init
+  terraform plan -target=aws_sagemaker_training_job.thai_ocr_training
+  terraform apply -target=aws_sagemaker_training_job.thai_ocr_training
+  ```
+- [ ] **ติดตาม Training Job**:
+  ```bash
+  aws sagemaker describe-training-job --training-job-name [job-name]
+  aws logs tail /aws/sagemaker/TrainingJobs --follow
+  ```
 
-## 6. Deployment & Inference
+## 6. Deployment & Inference (Terraform)
 
-- [ ] Build and register SageMaker model
-- [ ] Create endpoint configuration and deploy endpoint
-- [ ] Implement inference script for real-time prediction
-- [ ] Test endpoint using SDK or CLI
+- [ ] **เพิ่ม SageMaker Model และ Endpoint resources** ใน Terraform:
+  - `aws_sagemaker_model` สำหรับ trained model
+  - `aws_sagemaker_endpoint_configuration` สำหรับ endpoint config
+  - `aws_sagemaker_endpoint` สำหรับ real-time inference
+- [ ] **กำหนดค่า inference variables**:
+  - `inference_instance_type` (default: `ml.m5.large`)
+  - `min_capacity`, `max_capacity` สำหรับ auto-scaling
+- [ ] **Deploy ด้วย Terraform**:
+  ```bash
+  terraform plan -target=aws_sagemaker_endpoint.thai_ocr_endpoint
+  terraform apply -target=aws_sagemaker_endpoint.thai_ocr_endpoint
+  ```
+- [ ] **Test endpoint** ใช้ AWS CLI หรือ boto3:
+  ```bash
+  aws sagemaker-runtime invoke-endpoint \
+    --endpoint-name thai-ocr-endpoint \
+    --body fileb://test_image.jpg \
+    --content-type image/jpeg output.json
+  ```
 
 ## 7. Documentation & Maintenance
 
