@@ -7,9 +7,9 @@ import os
 import sys
 sys.path.append('PaddleOCR')
 
-# Test simple file access
-data_dir = "/home/partykub/workspace/Documents/sagemaker_thai-ocr/thai-letters/datasets/converted/train_data_thai_paddleocr_0730_1648/train_data/rec/"
-label_file = "/home/partykub/workspace/Documents/sagemaker_thai-ocr/thai-letters/datasets/converted/train_data_thai_paddleocr_0730_1648/train_data/rec/rec_gt_train.txt"
+# Test simple file access - Updated for Windows
+data_dir = r"thai-letters\datasets\converted\train_data_thai_paddleocr_0731_1604\train_data\rec"
+label_file = r"thai-letters\datasets\converted\train_data_thai_paddleocr_0731_1604\train_data\rec\rec_gt_train.txt"
 
 print("=== Testing Data Loading ===")
 print(f"Data dir exists: {os.path.exists(data_dir)}")

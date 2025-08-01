@@ -16,17 +16,25 @@ sagemaker_thai-ocr/                # Project root
 │   ├── deployment.md              # Deployment & inference
 │   └── terraform.md               # Terraform IaC guide
 ├── scripts/                       # Automation and management scripts
-│   ├── infrastructure/          # AWS resource management
-│   │   ├── aws_manager.py      # AWS resource management
-│   │   └── deploy.sh           # Complete deployment automation
-│   ├── ml/                     # Machine learning operations
-│   │   └── sagemaker_trainer.py # SageMaker training jobs
-│   ├── testing/                # Testing and validation
+│   ├── infrastructure/            # AWS resource management
+│   │   ├── aws_manager.py         # AWS resource management
+│   │   └── deploy.sh              # Complete deployment automation
+│   ├── ml/                        # Machine learning operations
+│   │   └── sagemaker_trainer.py   # SageMaker training jobs
+│   ├── testing/                   # Testing and validation
 │   │   └── test_aws_permissions.py # AWS permissions validation
-│   └── utils/                  # Utility scripts
+│   ├── training/                  # Training configuration and execution
+│   │   ├── setup_training_config.py # Training config setup
+│   │   └── sagemaker_train.py     # SageMaker training entry point
+│   ├── continue_deployment_v2.py  # Complete Docker build and deployment
+│   └── utils/                     # Utility scripts
 ├── thai-letters/                  # Data generation and conversion scripts
 ├── terraform/                     # Infrastructure as Code
-├── scripts/testing/test_aws_permissions.py # AWS permissions validation
+├── configs/                       # Training configuration files
+│   └── rec/                       # Recognition model configs
+├── requirements.txt               # Python dependencies with ML packages
+├── Dockerfile.sagemaker          # Docker container for SageMaker training
+├── test_aws_permissions.py       # AWS permissions validation
 ├── required_permissions.json     # Required AWS permissions
 ├── development-task.md           # Development task checklist
 └── README.md (this file)         # Project overview and quick start
@@ -53,22 +61,45 @@ python thai-letters/quick_phase1_generator.py --output synthetic_data/ --count 1
 
 # Convert to PaddleOCR format
 python thai-letters/phase1_paddleocr_converter.py --input-path thai_dataset_... --output-path train_data_thai_paddleocr_...
+
+# Setup training configurations
+python scripts/training/setup_training_config.py
 ```
 
 ### 3. Training
 ```bash
-# Local training
-python PaddleOCR/tools/train.py -c configs/rec/thai_rec.yml
+# Local training (testing)
+python PaddleOCR/tools/train.py -c configs/rec/thai_rec_dev.yml
 
-# SageMaker training
-python scripts/ml/sagemaker_trainer.py
+# SageMaker training (production)
+python scripts/continue_deployment_v2.py
+
+# Monitor training progress
+aws logs tail /aws/sagemaker/TrainingJobs --follow
 ```
 
 ### 4. Scripts Reference
 For detailed script usage, see [`doc/scripts.md`](doc/scripts.md):
 - **Infrastructure**: `scripts/infrastructure/aws_manager.py`, `scripts/infrastructure/deploy.sh`
-- **Training**: `scripts/ml/sagemaker_trainer.py` 
+- **Training**: `scripts/continue_deployment_v2.py`, `scripts/training/sagemaker_train.py`
+- **Configuration**: `scripts/training/setup_training_config.py`
 - **Testing**: `scripts/testing/test_aws_permissions.py`
+
+## Recent Updates
+
+### Latest Features (August 2025)
+- ✅ **Complete dependency resolution**: Fixed all Python and system library dependencies
+- ✅ **Enhanced Docker support**: Improved Dockerfile.sagemaker with OpenGL libraries
+- ✅ **SageMaker optimization**: CPU-only training configuration for SageMaker compatibility  
+- ✅ **Automated deployment**: `continue_deployment_v2.py` for complete build and deploy pipeline
+- ✅ **Training configuration**: Automated setup with `setup_training_config.py`
+- ✅ **S3 path optimization**: Corrected data structure for efficient training data access
+
+### Known Working Configuration
+- **Python packages**: scikit-image, rapidfuzz, albumentations, imgaug, lmdb, scipy, matplotlib
+- **System libraries**: libgl1-mesa-glx for OpenGL support
+- **PaddleOCR settings**: CPU-only, distributed=False for SageMaker
+- **S3 structure**: `/data/training/rec/` with proper label and image paths
 
 ## Documentation Links
 

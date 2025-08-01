@@ -16,12 +16,13 @@ logger = logging.getLogger(__name__)
 def test_aws_permissions():
     """Test AWS permissions based on required_permissions.json"""
     
-    # Initialize AWS clients
-    sts = boto3.client('sts')
-    s3 = boto3.client('s3')
-    iam = boto3.client('iam')
-    ecr = boto3.client('ecr')
-    sagemaker = boto3.client('sagemaker')
+    # Initialize AWS clients with default region
+    region = 'ap-southeast-1'  # Default region for this project
+    sts = boto3.client('sts', region_name=region)
+    s3 = boto3.client('s3', region_name=region)
+    iam = boto3.client('iam', region_name=region)
+    ecr = boto3.client('ecr', region_name=region)
+    sagemaker = boto3.client('sagemaker', region_name=region)
     
     results = {}
     

@@ -82,8 +82,12 @@ def generate_output_name(samples):
 
 def run_generator(samples, output_dir):
     """เรียกใช้ main dataset generator"""
+    # ใช้ python สำหรับ Windows, python3 สำหรับ Linux/Mac
+    import platform
+    python_cmd = "python" if platform.system() == "Windows" else "python3"
+    
     command = [
-        "python3", 
+        python_cmd, 
         "thai_dataset_generator.py", 
         str(samples),
         "-d", "th_dict.txt",

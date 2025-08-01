@@ -174,6 +174,80 @@ success = trainer.create_training_job(
 
 ---
 
+#### `scripts/training/sagemaker_train.py`
+**Purpose**: SageMaker training container entry point
+
+**Description**:
+- Main training script that runs inside SageMaker training container
+- Configures PaddleOCR for CPU-only training (SageMaker optimized)
+- Handles S3 data paths and training configuration
+- Integrates with Docker container environment
+
+**Usage**:
+```bash
+# Inside SageMaker container (automated)
+python /opt/ml/code/scripts/training/sagemaker_train.py \
+    --train /opt/ml/input/data/training \
+    --epochs 50
+
+# Local testing (with proper paths)
+python scripts/training/sagemaker_train.py \
+    --train ./train_data_thai_paddleocr_v1 \
+    --epochs 10
+```
+
+**When to use**:
+- Automatically executed by SageMaker training jobs
+- Testing training configuration locally
+- Debugging training container issues
+- Custom training parameter adjustment
+
+**Key Features**:
+- ✅ Automatic CPU/GPU configuration for SageMaker
+- ✅ S3 data path handling and validation
+- ✅ PaddleOCR configuration management
+- ✅ Training and validation dataset setup
+- ✅ Model output and artifact handling
+
+---
+
+#### `scripts/continue_deployment_v2.py`
+**Purpose**: Comprehensive Docker build and SageMaker deployment automation
+
+**Description**:
+- Automated Docker image building with dependency resolution
+- Handles ECR authentication and image pushing
+- Creates and manages SageMaker training jobs
+- Includes comprehensive error handling and status monitoring
+
+**Usage**:
+```bash
+# Run complete deployment pipeline
+python scripts/continue_deployment_v2.py
+
+# The script automatically:
+# 1. Builds Docker image with latest requirements
+# 2. Pushes to ECR repository
+# 3. Creates SageMaker training job
+# 4. Monitors training progress
+```
+
+**When to use**:
+- Complete deployment after code or dependency changes
+- Automated CI/CD pipeline integration
+- When Docker dependencies need updating
+- Deploying new training configurations
+
+**Key Features**:
+- ✅ Automatic Docker image building and caching
+- ✅ ECR authentication and image management
+- ✅ SageMaker job creation with proper configuration
+- ✅ Real-time training progress monitoring
+- ✅ Comprehensive error handling and logging
+- ✅ S3 data path validation and setup
+
+---
+
 ### Testing & Validation Scripts
 
 #### `scripts/testing/test_aws_permissions.py`
@@ -216,6 +290,23 @@ All scripts require these packages (installed via project setup):
 ```
 boto3>=1.39.16
 sagemaker>=2.248.2
+scikit-image>=0.19.0
+lmdb>=1.4.0
+imgaug>=0.4.0
+albumentations>=1.3.0
+scipy>=1.9.0
+matplotlib>=3.6.0
+rapidfuzz>=2.0.0
+```
+
+### Docker Dependencies
+Container requires these system packages:
+```
+libgl1-mesa-glx        # OpenGL support for OpenCV
+libglib2.0-0           # GLib library
+libsm6 libxext6        # X11 libraries
+libxrender-dev         # X11 rendering
+libgomp1              # OpenMP support
 ```
 
 ### AWS Configuration
@@ -255,9 +346,35 @@ python scripts/infrastructure/aws_manager.py
 ### Training Workflow
 ```bash
 # 1. Prepare data (see thai-letters/ scripts)
-# 2. Upload to S3
-# 3. Run training
-python scripts/ml/sagemaker_trainer.py
+python thai-letters/quick_phase1_generator.py
+python thai-letters/phase1_paddleocr_converter.py
+
+# 2. Setup training configurations
+python scripts/training/setup_training_config.py
+
+# 3. Test locally (optional)
+python PaddleOCR/tools/train.py -c configs/rec/thai_rec_dev.yml
+
+# 4. Deploy to SageMaker
+python scripts/continue_deployment_v2.py
+
+# 5. Monitor training progress
+aws logs tail /aws/sagemaker/TrainingJobs --follow
+```
+
+### Docker Development Workflow
+```bash
+# 1. Update dependencies
+# Edit requirements.txt with new packages
+
+# 2. Test Docker build locally
+docker build -f Dockerfile.sagemaker -t test-thai-ocr .
+
+# 3. Clear cache if needed
+docker system prune -af
+
+# 4. Deploy with updated container
+python scripts/continue_deployment_v2.py
 ```
 
 ### Troubleshooting
@@ -286,9 +403,31 @@ aws sts get-caller-identity
 - Verify S3 paths and data format
 - Ensure Docker image is properly built and pushed
 
+**Docker Build Issues**:
+- **ModuleNotFoundError for dependencies**: Update `requirements.txt` with missing packages
+- **libGL.so.1 missing**: Add `libgl1-mesa-glx` to Dockerfile system packages
+- **Container build failures**: Clear Docker cache with `docker system prune -af`
+- **Dependency conflicts**: Check package versions in requirements.txt
+
+**PaddleOCR Training Issues**:
+- **Distributed training errors**: Disable GPU and distributed training for SageMaker
+- **Data path errors**: Ensure S3 paths point to correct directory structure
+- **rapidfuzz missing**: Add `rapidfuzz>=2.0.0` to requirements.txt
+- **scikit-image missing**: Add `scikit-image>=0.19.0` to requirements.txt
+
+**S3 Data Structure Issues**:
+- **FileNotFoundError for labels**: Check that `rec_gt_train.txt` and `rec_gt_val.txt` exist
+- **Image path errors**: Verify thai_data/train/ contains training images
+- **Path configuration**: Update data_dir in training config to include '/rec/' suffix
+
 **Resource Already Exists**:
 - Scripts handle existing resources gracefully
 - Use unique suffixes for resource names when needed
+
+**ECR Authentication Issues**:
+- Run `aws ecr get-login-password` to refresh Docker login
+- Verify ECR repository exists and has proper permissions
+- Check AWS region configuration matches ECR region
 
 ---
 

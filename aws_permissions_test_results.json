@@ -7,11 +7,12 @@
   "s3": {
     "status": "SUCCESS",
     "paddleocr_buckets": [
+      "paddleocr-dev-data-lnsio0li",
       "paddleocr-thai-7dbf78fc",
       "paddleocr-thai-apse1-20250124",
       "paddleocr-thai-training-dataset"
     ],
-    "total_buckets": 8
+    "total_buckets": 9
   },
   "iam": {
     "status": "SUCCESS",
@@ -22,10 +23,8 @@
   },
   "ecr": {
     "status": "SUCCESS",
-    "paddleocr_repositories": [
-      "paddleocr-thai"
-    ],
-    "total_repositories": 2
+    "paddleocr_repositories": [],
+    "total_repositories": 0
   },
   "sagemaker": {
     "status": "SUCCESS",

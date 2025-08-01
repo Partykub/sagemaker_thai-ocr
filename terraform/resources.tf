@@ -10,16 +10,6 @@ resource "aws_s3_bucket_versioning" "data_bucket_versioning" {
   }
 }
 
-resource "aws_s3_bucket_server_side_encryption_configuration" "data_bucket_encryption" {
-  bucket = aws_s3_bucket.data_bucket.id
-
-  rule {
-    apply_server_side_encryption_by_default {
-      sse_algorithm = "AES256"
-    }
-  }
-}
-
 resource "random_string" "bucket_suffix" {
   length  = 8
   special = false
@@ -33,10 +23,6 @@ resource "aws_ecr_repository" "thai_ocr_repo" {
 
   image_scanning_configuration {
     scan_on_push = true
-  }
-
-  tags = {
-    Name = "${var.project_id}-${var.environment}-repository"
   }
 }
 
@@ -56,10 +42,6 @@ resource "aws_iam_role" "sagemaker_execution_role" {
       }
     ]
   })
-
-  tags = {
-    Name = "${var.project_id}-${var.environment}-sagemaker-role"
-  }
 }
 
 # Custom IAM policy for SageMaker with limited permissions

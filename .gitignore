@@ -178,6 +178,22 @@ out/
 # Built Visual Studio Code Extensions
 *.vsix
 
+# SageMaker Thai OCR Project Specific
+# Training data (too large for git)
+train_data_thai_paddleocr_*/
+
+# Model files (too large for git)
+models/sagemaker_trained/
+*.pdparams
+*.pdopt
+*.pdmodel
+
+# PaddleOCR directory (external)
+PaddleOCR/
+
+# Output directories
+output/
+
 # Terraform
 *.tfstate
 *.tfstate.*

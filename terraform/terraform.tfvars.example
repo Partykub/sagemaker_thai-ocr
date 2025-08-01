@@ -6,3 +6,11 @@ environment = "dev"
 aws_region  = "ap-southeast-1"
 owner       = "partykub"
 cost_center = "ml-research"
+
+# Training Configuration
+training_instance_type = "ml.m5.large"     # Use ml.p3.2xlarge for GPU training
+training_epochs        = 100
+training_batch_size    = 128
+training_learning_rate = 0.001
+max_training_time      = 86400             # 24 hours in seconds
+use_gpu               = true               # Set to false for CPU training
