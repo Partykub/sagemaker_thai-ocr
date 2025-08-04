@@ -179,25 +179,45 @@ out/
 *.vsix
 
 # SageMaker Thai OCR Project Specific
+
 # Training data (too large for git)
 train_data_thai_paddleocr_*/
+thai-letters/datasets/converted/train_data_thai_paddleocr_*/
 
-# Model files (too large for git)
+# Model files (large binary files)
 models/sagemaker_trained/
+models/*/best_model/
+models/*/output/
 *.pdparams
 *.pdopt
 *.pdmodel
+*.states
 
-# PaddleOCR directory (external)
+# Test results and outputs
+*_RESULTS_*.json
+*_TEST_RESULTS_*.json
+*_ANALYSIS_*.json
+*_REPORT_*.json
+TRAINED_MODEL_*_RESULTS_*.json
+VISUAL_ANALYSIS_REPORT_*.json
+
+# PaddleOCR directory (external dependency)
 PaddleOCR/
 
 # Output directories
 output/
+inference/
+predicts_*.txt
 
-# Terraform
+# Configuration files with local paths
+config_local.yml
+*_local.yml
+
+# Terraform state files (contain sensitive info)
 *.tfstate
 *.tfstate.*
 *.tfvars
+!*.tfvars.example
 *.tfvars.json
 .terraform/
 .terraform.lock.hcl
@@ -205,9 +225,18 @@ terraform-provider-*
 crash.log
 crash.*.log
 
-# AWS
+# AWS credentials and config
 .aws/
 aws-exports.js
+.env.aws
+aws-credentials.json
+
+# SageMaker specific
+.sagemaker/
+sagemaker-*/
+sm-*/
+job-dir/
+model.tar.gz
 
 # Machine Learning / AI specific
 # Dataset directories
@@ -267,6 +296,7 @@ thai_fonts/
 # Generated images and processed data
 generated_images/
 processed_images/
+synthesized_images/
 *.jpg
 *.jpeg
 *.png
@@ -275,6 +305,15 @@ processed_images/
 *.tif
 !sample_images/
 !demo_images/
+!**/README.md
+!docs/**/*.png
+!docs/**/*.jpg
+
+# Keep specific sample files for documentation
+!sample_*.jpg
+!sample_*.png
+!demo_*.jpg
+!demo_*.png
 
 # Temporary files
 *.tmp
@@ -325,7 +364,42 @@ doc/build/
 *.bin
 *.dat
 *.index
+*.tar.gz
+*.zip
+*.7z
 
-# Development specific
+# Development and testing specific
 .python-version
 requirements-dev.txt
+debug/
+debug_*
+test_*.py
+*_test_*.py
+
+# Jupyter Notebook checkpoints and outputs
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/
+*-checkpoint.ipynb
+
+# Virtual environments (project specific)
+venv/
+.venv/
+sagemaker_thai_ocr_env/
+
+# IDE specific
+.vscode/settings.json
+.vscode/launch.json
+*.code-workspace
+
+# Temporary development files
+scratch/
+experiments/
+playground/
+temp_*
+tmp_*
+
+# Cache directories
+.cache/
+__pycache__/
+.pytest_cache/
+*/.pytest_cache/

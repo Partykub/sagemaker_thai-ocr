@@ -15,7 +15,115 @@ Scripts for managing AWS resources and infrastructure deployment.
 Scripts for training, inference, and model management.
 
 ### 📊 **Testing & Validation**
-Scripts for testing permissions, validating setups, and monitoring.
+Scripts for testing permissions, validating setups, model testing, and monitoring.
+
+#### `scripts/testing/simple_dataset_test.py`
+**Purpose**: Analyze and validate Thai OCR dataset structure and quality
+
+**Description**: 
+- Performs comprehensive dataset analysis including image quality assessment
+- Validates ground truth labels and character distribution
+- Provides statistical overview of dataset composition
+- Checks image readability and preprocessing compatibility
+
+**Usage**:
+```bash
+# Run dataset analysis
+python scripts/testing/simple_dataset_test.py
+```
+
+**When to use**:
+- Before starting model training to validate dataset quality
+- When debugging data loading issues
+- To understand character distribution in training data
+- For dataset quality assessment reports
+
+**Key Features**:
+- ✅ Image quality analysis (brightness, contrast, dimensions)
+- ✅ Character frequency analysis
+- ✅ Ground truth validation
+- ✅ Statistical dataset overview
+
+#### `scripts/testing/direct_model_test.py`
+**Purpose**: Direct model testing with visual analysis and preprocessing validation
+
+**Description**: 
+- Tests trained Thai OCR models using direct Paddle inference
+- Validates image preprocessing pipeline compatibility
+- Performs visual analysis of model inputs without full inference
+- Checks model file integrity and loads character dictionaries
+
+**Usage**:
+```bash
+# Run visual model analysis
+python scripts/testing/direct_model_test.py
+```
+
+**When to use**:
+- After model training completion to validate model files
+- Before setting up inference pipelines
+- To debug preprocessing issues
+- For model readiness assessment
+
+**Key Features**:
+- ✅ Model file validation (.pdparams)
+- ✅ Image preprocessing pipeline testing
+- ✅ Character dictionary loading
+- ✅ Visual analysis reporting
+
+#### `scripts/utils/dataset_detector.py`
+**Purpose**: Automatic dataset detection and analysis for testing
+
+**Description**: 
+- Scans project for available datasets (converted, raw, output)
+- Analyzes dataset structure and recommends best options for testing
+- Provides detailed dataset statistics and file organization
+- Identifies label files and image folders automatically
+
+**Usage**:
+```bash
+# Detect and analyze datasets
+python scripts/utils/dataset_detector.py
+```
+
+**When to use**:
+- When setting up testing environments
+- To find the best dataset for model evaluation
+- For project structure exploration
+- Before running comprehensive model tests
+
+**Key Features**:
+- ✅ Automatic dataset discovery
+- ✅ Structure analysis and scoring
+- ✅ Label file detection
+- ✅ Dataset recommendation system
+
+#### `scripts/ml/test_model_with_ground_truth.py`
+**Purpose**: Comprehensive model testing with ground truth validation
+
+**Description**: 
+- Tests trained Thai OCR models against validation datasets with known answers
+- Performs character-level accuracy analysis
+- Generates detailed performance reports and recommendations
+- Compares predicted text with ground truth labels
+
+**Usage**:
+```bash
+# Run comprehensive model testing
+python scripts/ml/test_model_with_ground_truth.py
+```
+
+**When to use**:
+- After successful model training completion
+- For production readiness assessment
+- To measure character-level recognition accuracy
+- When evaluating model performance improvements
+
+**Key Features**:
+- ✅ Ground truth comparison testing
+- ✅ Character-level accuracy analysis
+- ✅ Performance reporting with recommendations
+- ✅ Sample-based testing with configurable size
 
 ---
 
