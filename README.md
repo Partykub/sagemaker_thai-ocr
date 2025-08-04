@@ -78,12 +78,29 @@ python scripts/continue_deployment_v2.py
 aws logs tail /aws/sagemaker/TrainingJobs --follow
 ```
 
-### 4. Scripts Reference
+### 4. Model Usage & Inference
+```bash
+# Quick single image inference
+cd PaddleOCR
+python tools/infer_rec.py \
+  -c "../configs/rec/thai_rec_trained.yml" \
+  -o Global.pretrained_model="../models/sagemaker_trained/best_model/model" \
+  Global.infer_img="path/to/image.jpg"
+
+# Batch processing multiple images
+python scripts/ml/comprehensive_test.py
+
+# Model testing and validation
+python scripts/testing/direct_model_test.py
+```
+
+### 5. Scripts Reference
 For detailed script usage, see [`doc/scripts.md`](doc/scripts.md):
 - **Infrastructure**: `scripts/infrastructure/aws_manager.py`, `scripts/infrastructure/deploy.sh`
 - **Training**: `scripts/continue_deployment_v2.py`, `scripts/training/sagemaker_train.py`
 - **Configuration**: `scripts/training/setup_training_config.py`
 - **Testing**: `scripts/testing/test_aws_permissions.py`
+- **Model Usage**: See [`doc/model-usage.md`](doc/model-usage.md) for comprehensive inference guide
 
 ## Recent Updates
 

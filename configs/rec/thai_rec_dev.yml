@@ -12,9 +12,9 @@ Global:
   save_inference_dir: None
   use_visualdl: False
   infer_img: None
-  character_dict_path: thai-letters\datasets\converted\train_data_thai_paddleocr_0731_1604/train_data/th_dict.txt
+  character_dict_path: thai-letters/th_dict.txt
   character_type: thai
-  max_text_length: 25
+  max_text_length: 50
   infer_mode: False
   use_space_char: False
   distributed: False
@@ -38,8 +38,8 @@ Architecture:
     img_size:
       - 64
       - 256
-    out_char_num: 25
-    out_channels: 192
+    out_char_num: 880
+    out_channels: 256
     patch_merging: Conv
     embed_dim:
       - 64

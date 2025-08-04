@@ -6,6 +6,22 @@ This document outlines all scripts in the Thai OCR project, their purposes, usag
 
 The `scripts/` directory contains automation and management scripts for the Thai OCR project. Scripts are organized by functionality and follow consistent naming conventions.
 
+## 🎯 Quick Start - Model Usage
+
+**For immediate model inference** (recommended):
+```bash
+# Navigate to PaddleOCR directory
+cd PaddleOCR
+
+# Run inference on single image
+python tools/infer_rec.py \
+  -c "../configs/rec/thai_rec_trained.yml" \
+  -o Global.pretrained_model="../models/sagemaker_trained/best_model/model" \
+  Global.infer_img="path/to/image.jpg"
+```
+
+👉 **See [Model Usage Guide](model-usage.md) for comprehensive inference instructions**
+
 ## Script Categories
 
 ### 🔧 **Infrastructure Management**
@@ -49,6 +65,81 @@ python scripts/testing/simple_dataset_test.py
 
 **Description**: 
 - Tests trained Thai OCR models using direct Paddle inference
+- Provides comprehensive visual analysis of predictions vs ground truth
+- Validates model loading and configuration compatibility
+- Generates detailed accuracy reports and character-level analysis
+
+**Usage**:
+```bash
+# Test trained model with comprehensive analysis
+python scripts/testing/direct_model_test.py
+
+# Test with specific configuration
+python scripts/testing/direct_model_test.py --config configs/rec/thai_rec_trained.yml
+```
+
+**When to use**:
+- After model training completion to validate performance
+- When debugging model inference issues
+- For comprehensive accuracy assessment
+- Before deploying models to production
+
+**Key Features**:
+- ✅ Direct model inference testing
+- ✅ Visual prediction analysis
+- ✅ Character-level accuracy measurement
+- ✅ Configuration validation
+- ✅ Preprocessing pipeline testing
+
+#### `PaddleOCR/tools/infer_rec.py` (Recommended Method)
+**Purpose**: Official PaddleOCR inference tool for recognition models
+
+**Description**: 
+- Direct command-line interface for running trained recognition models
+- Supports custom configurations and model paths
+- Provides confidence scores and detailed logging
+- Most reliable method for model inference
+
+**Usage**:
+```bash
+# Navigate to PaddleOCR directory first
+cd PaddleOCR
+
+# Basic inference command
+python tools/infer_rec.py \
+  -c "../configs/rec/thai_rec_trained.yml" \
+  -o Global.pretrained_model="../models/sagemaker_trained/best_model/model" \
+  Global.infer_img="path/to/image.jpg"
+
+# Multiple images inference
+python tools/infer_rec.py \
+  -c "../configs/rec/thai_rec_trained.yml" \
+  -o Global.pretrained_model="../models/sagemaker_trained/best_model/model" \
+  Global.infer_img="path/to/images/"
+```
+
+**When to use**:
+- For production model inference (recommended method)
+- When testing individual images quickly
+- For batch processing multiple images
+- When debugging model configuration issues
+
+**Key Features**:
+- ✅ Official PaddleOCR inference interface
+- ✅ Confidence score reporting
+- ✅ Batch and single image processing
+- ✅ Custom configuration support
+- ✅ Detailed logging and error reporting
+
+**Output Format**:
+```
+[2025/08/04 10:45:41] ppocr INFO: infer_img: path/to/image.jpg
+[2025/08/04 10:45:41] ppocr INFO:        result: predicted_text  confidence_score
+[2025/08/04 10:45:41] ppocr INFO: success!
+```
+
+#### `scripts/ml/comprehensive_test.py`
+**Purpose**: Comprehensive model testing framework with dictionary comparison
 - Validates image preprocessing pipeline compatibility
 - Performs visual analysis of model inputs without full inference
 - Checks model file integrity and loads character dictionaries
