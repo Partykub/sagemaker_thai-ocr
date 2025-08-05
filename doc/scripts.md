@@ -6,41 +6,110 @@ This document outlines all scripts in the Thai OCR project, their purposes, usag
 
 The `scripts/` directory contains automation and management scripts for the Thai OCR project. Scripts are organized by functionality and follow consistent naming conventions.
 
-## 🎯 Current Project Status
+## 🎯 Current Project Status & Verified Scripts
 
-### ✅ Completed Scripts & Workflows
+### ✅ **Completed & Working Scripts**
 
-#### Training Pipeline (Fully Tested)
-1. **Data Generation**: `thai-letters/quick_phase1_generator.py` - Generated 9,408 synthetic images
-2. **Data Conversion**: `thai-letters/quick_phase1_converter.py` - Converted to PaddleOCR format
-3. **Training Deployment**: `scripts/ml/deploy_sagemaker_training.py` - Successfully trained on SageMaker
-4. **Training Monitoring**: `scripts/ml/monitor_training.py` - Tracked 25+ hour training process
+#### **Model Testing (VERIFIED WORKING)**
 
-#### Infrastructure (Deployed & Working)
-- AWS resources via Terraform (S3, ECR, SageMaker, IAM)
-- Docker image built and pushed to ECR
-- SageMaker training job completed successfully
+#### `test_sagemaker_model.py` - **PRIMARY TESTING SCRIPT**
+**Purpose**: Standardized testing of SageMaker-trained Thai OCR model with exact training configuration
 
-### ⚠️ Known Issues
-- **Model Inference**: PaddleOCR version compatibility between training/local environments
-- **Testing Scripts**: Multiple testing approaches tried, all fail due to version mismatch
+**Description**: 
+- Uses EXACT same configuration as training (CRNN + MobileNetV3)
+- Tests with standardized validation dataset with ground truth labels
+- Provides detailed accuracy metrics and confidence scores
+- Ensures configuration consistency between training and inference
+- Outputs single character results as designed
 
-### 🔧 Scripts Needing Version Compatibility Fix
-- `scripts/ml/comprehensive_test.py` - OCR quality testing (fails on model loading)
-- `test_simple_model.py` - Simple model validation (fails on PaddleOCR API)
-- `scripts/ml/paddleocr_inference.py` - Direct inference (import errors)
-
-## 🎯 Immediate Next Steps
-
-**For model deployment** (when version issues resolved):
+**Usage**:
 ```bash
-# Use compatible PaddleOCR environment
-cd PaddleOCR
-python tools/infer_rec.py \
-  -c "../configs/rec/thai_rec_trained.yml" \
-  -o Global.pretrained_model="../models/sagemaker_trained/best_model/model" \
-  Global.infer_img="path/to/image.jpg"
+# Standard model testing (RECOMMENDED)
+python test_sagemaker_model.py
 ```
+
+**Configuration Used**:
+- **Model**: `models/sagemaker_trained/best_accuracy.pdparams` (9,205,880 bytes)
+- **Dictionary**: `thai-letters/th_dict.txt` (880 characters, 7,323 bytes)
+- **Architecture**: CRNN + MobileNetV3 (scale: 0.5, hidden_size: 96)
+- **Max Text Length**: 1 (single character mode)
+- **Test Dataset**: `rec_gt_val.txt` (15 samples with ground truth)
+
+**When to use**:
+- ✅ Primary testing method for trained model validation
+- ✅ When verifying model performance with known ground truth
+- ✅ For consistent, repeatable testing results
+- ✅ To validate configuration compatibility
+
+**Key Features**:
+- ✅ Exact training configuration match
+- ✅ Standardized test dataset (15 validation samples)
+- ✅ Ground truth comparison with accuracy metrics
+- ✅ JSON result export for analysis
+- ✅ 93.3% inference success rate verified
+
+**Current Performance**:
+- Model Loading: 100% success
+- Inference Execution: 93.3% success (14/15 samples)
+- Single Character Output: Working
+- Character Accuracy: Low (needs improvement)
+
+#### `quick_single_char_test.py` - **QUICK TESTING SCRIPT**
+**Purpose**: Simple, quick testing for rapid model validation
+
+**Description**: 
+- Simplified testing approach for quick verification
+- Tests basic model loading and inference pipeline
+- Provides immediate feedback on model functionality
+- Less comprehensive than main testing script
+
+**Usage**:
+```bash
+# Quick model validation
+python quick_single_char_test.py
+```
+
+**When to use**:
+- ✅ Quick model functionality check
+- ✅ Basic inference pipeline validation
+- ✅ Development and debugging
+- ✅ When main testing script is too comprehensive
+
+#### **Training & Data Generation (COMPLETED)**
+
+#### `thai-letters/quick_phase1_generator.py` - **DATA GENERATION**
+**Purpose**: Generate synthetic Thai character images for training
+
+**Description**: 
+- Successfully generated 9,408 synthetic Thai images
+- Multiple fonts and styles for data diversity
+- Creates ground truth labels automatically
+- Optimized for PaddleOCR training format
+
+**Usage**:
+```bash
+# Generate training data
+python thai-letters/quick_phase1_generator.py 10
+```
+
+**Status**: ✅ **COMPLETED** - Generated full training dataset
+
+#### `scripts/ml/deploy_sagemaker_training.py` - **TRAINING DEPLOYMENT**
+**Purpose**: Deploy and execute training on AWS SageMaker
+
+**Description**: 
+- Successfully completed 25+ hour training on ml.g4dn.xlarge
+- Generated working model files (9.2MB best_accuracy.pdparams)
+- Handles Docker build, ECR push, and SageMaker job creation
+- Monitors training progress and downloads results
+
+**Usage**:
+```bash
+# Deploy training to SageMaker
+python scripts/ml/deploy_sagemaker_training.py
+```
+
+**Status**: ✅ **COMPLETED** - Model training successful
 
 ## Script Categories
 

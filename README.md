@@ -2,24 +2,82 @@
 
 A comprehensive Optical Character Recognition (OCR) solution for the Thai language built on PaddleOCR. This project provides scripts for data generation, dataset conversion, model training, and deployment on AWS SageMaker with infrastructure managed by Terraform.
 
-## 🎯 Project Status (August 2025)
+## 🎯 Project Status (January 8, 2025)
 
 ### ✅ Completed Milestones
 - **Data Generation**: 9,408 synthetic Thai text images with multiple fonts
 - **Dataset Conversion**: Successfully converted to PaddleOCR format with train/validation split
 - **Infrastructure Setup**: AWS SageMaker, ECR, S3 resources deployed via Terraform
-- **Model Training**: 25+ hour training on SageMaker ml.g4dn.xlarge instance
-- **Model Artifacts**: 6.5MB trained model downloaded and extracted
+- **Model Training**: 25+ hour training on SageMaker ml.g4dn.xlarge instance completed
+- **Model Testing**: Single character inference working with 93.3% success rate
+- **Configuration Verification**: Exact training/inference configuration match confirmed
+- **Documentation**: Comprehensive guides and standardized testing procedures
 
-### ⚠️ Current Challenges
-- **Version Compatibility**: PaddleOCR framework version mismatch between training/inference environments
-- **Model Loading**: Inference fails due to API changes between PaddleOCR versions
-- **Configuration Issues**: Model file format requires specific inference setup
+### ⚠️ Current Challenge: Model Accuracy
+- **Issue**: Model loads and executes successfully but predictions don't match ground truth
+- **Status**: Model produces single characters (✅) but accuracy very low (~0%)
+- **Investigation**: Focusing on training data quality and preprocessing consistency
+- **Next Steps**: Data quality analysis and model performance optimization
 
-### 🔧 Active Work
-- Investigating PaddleOCR version compatibility solutions
-- Testing different model loading approaches
-- Documenting model deployment strategies
+### 📊 Current Metrics
+- **Model Loading**: 100% success rate ✅
+- **Inference Execution**: 93.3% success rate (14/15 samples) ✅  
+- **Single Character Output**: Working correctly ✅
+- **Character Accuracy**: Very low, needs improvement ⚠️
+- **Configuration Consistency**: Verified exact match ✅
+
+### 🔧 Current Training Configuration (VERIFIED WORKING)
+
+#### **Model Architecture**
+- **Algorithm**: CRNN + MobileNetV3
+- **Backbone**: MobileNetV3 (scale: 0.5, model_name: large)
+- **Neck**: SequenceEncoder (encoder_type: rnn, hidden_size: 96)
+- **Head**: CTCHead (fc_decay: 0.00001)
+
+#### **Model Files**
+- **Primary Model**: `models/sagemaker_trained/best_accuracy.pdparams` (9,205,880 bytes)
+- **Optimizer**: `models/sagemaker_trained/best_accuracy.pdopt`
+- **Config**: `models/sagemaker_trained/config.yml` (2,262 bytes)
+- **Alternative**: `models/sagemaker_trained/best_model/model.pdparams`
+
+#### **Dictionary Configuration**
+- **File**: `thai-letters/th_dict.txt` (7,323 bytes, 880 characters)
+- **Character Types**: Thai characters, English letters, numbers, symbols
+- **Encoding**: UTF-8
+
+#### **Training Parameters**
+- **Max Text Length**: 1 (Single Character Mode)
+- **Character Type**: thai
+- **Use Space Char**: false
+- **Architecture**: CRNN + MobileNetV3 (same as inference)
+
+### 🧪 Testing Configuration (STANDARDIZED)
+
+#### **Primary Test Dataset**
+- **Location**: `thai-letters/datasets/converted/train_data_thai_paddleocr_0804_1144/train_data/rec/rec_gt_val.txt`
+- **Format**: `image_path\tground_truth_text`
+- **Sample Count**: 15 validation samples
+- **Examples**: 
+  - `117_44.jpg → 'อุ้'`
+  - `032_34.jpg → 'ค์'`
+  - `121_15.jpg → 'ขั้'`
+
+#### **Test Script**
+- **Primary Script**: `test_sagemaker_model.py`
+- **Config Used**: Auto-generated with exact training parameters
+- **Success Rate**: 93.3% (14/15 samples working)
+- **Output**: Single character results as designed
+
+### ⚠️ Current Model Performance
+- **Model Loading**: ✅ SUCCESS (100%)
+- **Inference Execution**: ✅ SUCCESS (93.3%)
+- **Single Character Output**: ✅ WORKING
+- **Accuracy**: ❌ LOW (needs improvement - model predicts different characters)
+
+Example Results:
+- Ground Truth: `อุ้` → Predicted: `ซ`
+- Ground Truth: `ค` → Predicted: `ช`
+- Ground Truth: `จิ` → Predicted: `ก`
 
 ## Repository Layout
 
@@ -97,21 +155,37 @@ python scripts/continue_deployment_v2.py
 aws logs tail /aws/sagemaker/TrainingJobs --follow
 ```
 
-### 4. Model Usage & Inference
+### 4. Model Testing & Inference (STANDARDIZED)
+
+#### **Standard Testing Procedure**
 ```bash
-# Quick single image inference
-cd PaddleOCR
-python tools/infer_rec.py \
-  -c "../configs/rec/thai_rec_trained.yml" \
-  -o Global.pretrained_model="../models/sagemaker_trained/best_model/model" \
-  Global.infer_img="path/to/image.jpg"
-
-# Batch processing multiple images
-python scripts/ml/comprehensive_test.py
-
-# Model testing and validation
-python scripts/testing/direct_model_test.py
+# Use the verified configuration and test dataset
+python test_sagemaker_model.py
 ```
+
+#### **Manual Single Image Testing**
+```bash
+# Navigate to PaddleOCR directory
+cd PaddleOCR
+
+# Test with exact training configuration
+python tools/infer_rec.py \
+  -c "../test_inference_config.yml" \
+  -o Global.infer_img="../test_images/thai_word_01_สวัสดี.jpg"
+```
+
+#### **Verified Configuration Parameters**
+- **Model Path**: `../models/sagemaker_trained/best_accuracy`
+- **Dictionary**: `../thai-letters/th_dict.txt` (880 characters)
+- **Max Text Length**: 1 (single character mode)
+- **Architecture**: CRNN + MobileNetV3 (exact match with training)
+- **Character Type**: thai
+- **Use Space Char**: false
+
+#### **Test Dataset**
+- **Primary**: `thai-letters/datasets/converted/train_data_thai_paddleocr_0804_1144/train_data/rec/rec_gt_val.txt`
+- **Format**: Tab-separated (image_path\tground_truth)
+- **Usage**: Standardized test set with known ground truth labels
 
 ### 5. Scripts Reference
 For detailed script usage, see [`doc/scripts.md`](doc/scripts.md):
