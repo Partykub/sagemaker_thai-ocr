@@ -2,12 +2,76 @@
 
 This guide covers deploying the trained Thai OCR model and running inference both locally and on AWS SageMaker.
 
-## 🎯 Local Model Inference (Quick Start)
+## 🎯 Current Deployment Status
+
+### ✅ Model Training Completed
+- **Trained Model**: Available in `models/sagemaker_trained/` (6.5MB)
+- **Model Files**: 
+  - `best_accuracy.pdparams` - Best performing checkpoint
+  - `model.pdparams` - Final model weights  
+  - `config.yml` - Training configuration
+  - `inference.pdiparams`, `inference.pdmodel` - Inference files (created)
+
+### ⚠️ Known Issues & Solutions Attempted
+
+#### Issue 1: PaddleOCR Version Compatibility
+**Problem**: Training used SageMaker PaddleOCR version, local environment uses different version
+```
+AttributeError: 'paddle.fluid.libpaddle.AnalysisConfig' object has no attribute 'set_optimization_level'
+```
+
+**Solutions Tried**:
+- ✅ Created inference files from model files
+- ✅ Added missing configuration files
+- ✅ Tested multiple loading approaches (PaddleOCR, TextRecognizer)
+- ❌ All methods fail due to API version differences
+
+#### Issue 2: Model File Format
+**Problem**: Model expects specific file naming and configuration
+```
+neither inference.json nor inference.pdmodel was found
+```
+
+**Solutions Applied**:
+- ✅ Copied `model.pdparams` → `inference.pdiparams`
+- ✅ Copied `model.pdparams` → `inference.pdmodel`  
+- ✅ Copied training config to model directory
+- ⚠️ Still requires compatible PaddleOCR version
+
+#### Issue 3: Dictionary Compatibility
+**Problem**: Multiple dictionary versions cause confusion
+- `th_dict.txt`: 880 characters (includes English + noise)
+- `th_dict_optimized.txt`: 74 characters (Thai only)
+
+**Solution**: Using optimized dictionary for cleaner inference
+
+### 🔧 Recommended Solutions
+
+1. **Docker Environment Matching**
+   ```bash
+   # Use same PaddleOCR version as SageMaker training
+   docker run -it paddlepaddle/paddle:2.4.2-gpu-cuda11.2-cudnn8
+   ```
+
+2. **Version Downgrade**
+   ```bash
+   # Install compatible PaddleOCR version
+   pip install paddlepaddle==2.4.2
+   pip install paddleocr==2.6.1.3
+   ```
+
+3. **Model Re-export**
+   ```bash
+   # Export model in compatible format
+   python scripts/ml/export_inference_model.py
+   ```
+
+## 🎯 Local Model Inference (When Fixed)
 
 ### Prerequisites
-1. **Trained model** available at `models/sagemaker_trained/best_model/`
-2. **Configuration file** at `configs/rec/thai_rec_trained.yml`
-3. **PaddleOCR installed** in the environment
+1. **Compatible PaddleOCR environment**
+2. **Trained model** available at `models/sagemaker_trained/best_model/`
+3. **Proper configuration files**
 
 ### Step 1: Verify Model Structure
 ```bash

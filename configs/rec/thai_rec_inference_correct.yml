@@ -1,0 +1,28 @@
+Global:
+  use_gpu: False
+  pretrained_model: ./models/sagemaker_trained/best_model/model
+  character_dict_path: ./thai-letters/th_dict_optimized.txt
+  character_type: thai
+  max_text_length: 25
+  infer_mode: True
+  use_space_char: False
+  save_res_path: ./inference_results.txt
+  
+Architecture:
+  model_type: rec
+  algorithm: CRNN
+  Transform:
+  Backbone:
+    name: MobileNetV3
+    scale: 0.5
+    model_name: large
+  Neck:
+    name: SequenceEncoder
+    encoder_type: rnn
+    hidden_size: 96
+  Head:
+    name: CTCHead
+    fc_decay: 1e-05
+
+PostProcess:
+  name: CTCLabelDecode

@@ -6,21 +6,41 @@ This document outlines all scripts in the Thai OCR project, their purposes, usag
 
 The `scripts/` directory contains automation and management scripts for the Thai OCR project. Scripts are organized by functionality and follow consistent naming conventions.
 
-## 🎯 Quick Start - Model Usage
+## 🎯 Current Project Status
 
-**For immediate model inference** (recommended):
+### ✅ Completed Scripts & Workflows
+
+#### Training Pipeline (Fully Tested)
+1. **Data Generation**: `thai-letters/quick_phase1_generator.py` - Generated 9,408 synthetic images
+2. **Data Conversion**: `thai-letters/quick_phase1_converter.py` - Converted to PaddleOCR format
+3. **Training Deployment**: `scripts/ml/deploy_sagemaker_training.py` - Successfully trained on SageMaker
+4. **Training Monitoring**: `scripts/ml/monitor_training.py` - Tracked 25+ hour training process
+
+#### Infrastructure (Deployed & Working)
+- AWS resources via Terraform (S3, ECR, SageMaker, IAM)
+- Docker image built and pushed to ECR
+- SageMaker training job completed successfully
+
+### ⚠️ Known Issues
+- **Model Inference**: PaddleOCR version compatibility between training/local environments
+- **Testing Scripts**: Multiple testing approaches tried, all fail due to version mismatch
+
+### 🔧 Scripts Needing Version Compatibility Fix
+- `scripts/ml/comprehensive_test.py` - OCR quality testing (fails on model loading)
+- `test_simple_model.py` - Simple model validation (fails on PaddleOCR API)
+- `scripts/ml/paddleocr_inference.py` - Direct inference (import errors)
+
+## 🎯 Immediate Next Steps
+
+**For model deployment** (when version issues resolved):
 ```bash
-# Navigate to PaddleOCR directory
+# Use compatible PaddleOCR environment
 cd PaddleOCR
-
-# Run inference on single image
 python tools/infer_rec.py \
   -c "../configs/rec/thai_rec_trained.yml" \
   -o Global.pretrained_model="../models/sagemaker_trained/best_model/model" \
   Global.infer_img="path/to/image.jpg"
 ```
-
-👉 **See [Model Usage Guide](model-usage.md) for comprehensive inference instructions**
 
 ## Script Categories
 

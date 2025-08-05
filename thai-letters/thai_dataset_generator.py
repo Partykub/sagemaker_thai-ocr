@@ -110,13 +110,20 @@ class OptimizedThaiGenerator:
                 if char and char not in ['', ' ', '\n']:
                     characters.append(char)
         
+        # กรองเอาเฉพาะตัวอักษรไทยและตัวเลข (filter ออกภาษาอังกฤษ)
+        filtered_chars = []
+        for char in characters:
+            # เก็บ Thai characters หรือ digits
+            if any('\u0e00' <= c <= '\u0e7f' for c in char) or char.isdigit():
+                filtered_chars.append(char)
+        
         # กรองเอาเฉพาะตัวอักษรที่สามารถแสดงผลได้
         valid_chars = []
-        for char in characters:
+        for char in filtered_chars:
             if self._can_render_character(char):
                 valid_chars.append(char)
         
-        print(f"📖 Valid characters: {len(valid_chars)}/{len(characters)}")
+        print(f"📖 Valid characters: {len(valid_chars)}/{len(characters)} (filtered: {len(filtered_chars)})")
         return valid_chars
         
     def _can_render_character(self, char):

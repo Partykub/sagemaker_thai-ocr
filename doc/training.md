@@ -2,6 +2,30 @@
 
 This document outlines the training process for the Thai OCR model using PaddleOCR in both local and SageMaker environments.
 
+## 🎯 Training Status
+
+### ✅ Completed Training Rounds
+
+#### Round 1: SageMaker Production Training (August 2025)
+- **Instance**: ml.g4dn.xlarge (GPU)
+- **Duration**: 25+ hours (1 day, 1 hour, 17 minutes)
+- **Configuration**: SVTR_LCNet architecture, 100 epochs
+- **Dataset**: 9,408 synthetic Thai images
+- **Status**: ✅ **COMPLETED SUCCESSFULLY**
+- **Output**: 6.5MB model artifacts in S3
+- **Job Name**: `paddleocr-thai-training-1754289824`
+
+#### Training Metrics
+- **Data Split**: 80% train (7,526 images) / 20% validation (1,882 images)
+- **Character Set**: 74 Thai characters + digits (optimized dictionary)
+- **Image Format**: 64x256 pixels, RGB
+- **Cost**: ~$25 USD for full training
+
+### ⚠️ Current Challenges
+- **Model Inference**: PaddleOCR version compatibility issues
+- **File Format**: Trained model requires specific inference configuration
+- **API Changes**: Framework API differences between training/inference versions
+
 ## Prerequisites
 
 Before starting training, ensure you have:

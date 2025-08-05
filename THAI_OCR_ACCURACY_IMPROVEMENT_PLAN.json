@@ -1,0 +1,68 @@
+{
+  "problems_analysis": {
+    "hallucination": {
+      "description": "Model generates long irrelevant text instead of actual characters",
+      "examples": [
+        {
+          "input": "ตั่",
+          "output": "อู๋DผณุมGลืรี๊ยวัณ์วั",
+          "confidence": 0.0014
+        },
+        {
+          "input": "Z",
+          "output": "ปูปั้ปูภ้กีกู้Uบุ้สินั้วุ้Uวุ้สีภีวุ้",
+          "confidence": 0.0015
+        }
+      ],
+      "root_causes": [
+        "Dictionary too large (880 chars vs needed 74 chars)",
+        "Model confused by too many character options",
+        "CTC loss allowing arbitrary length output",
+        "Insufficient constraint on output length"
+      ]
+    },
+    "low_confidence": {
+      "description": "Very low confidence scores (0.001-0.003)",
+      "root_causes": [
+        "Model uncertainty due to large character space",
+        "Poor training convergence",
+        "Mismatched dictionary between training and inference"
+      ]
+    },
+    "dictionary_mismatch": {
+      "description": "Model trained with 880-char dict but optimized dict has 74 chars",
+      "root_causes": [
+        "Model architecture expects 880 output classes",
+        "Using wrong dictionary for inference",
+        "Need to retrain with correct dictionary"
+      ]
+    }
+  },
+  "strategy": {
+    "phase_1_single_char": {
+      "objective": "Perfect single Thai character recognition",
+      "approach": [
+        "Use optimized 74-character dictionary only",
+        "Limit max_text_length to 1",
+        "Filter dataset to single-character samples only",
+        "Increase training epochs for single char focus",
+        "Add confidence threshold validation"
+      ],
+      "dataset_modifications": [
+        "Extract single-character samples from existing dataset",
+        "Create synthetic single-character data",
+        "Balance character frequency distribution",
+        "Add character-specific augmentations"
+      ],
+      "model_modifications": [
+        "Reduce max_text_length from 25 to 1",
+        "Use optimized dictionary (74 chars)",
+        "Adjust CTC loss for single character prediction",
+        "Add character classification head"
+      ]
+    }
+  },
+  "config_path": "C:\\Users\\admin\\Documents\\sagemaker_thai-ocr\\configs\\rec\\thai_rec_single_char.yml",
+  "dataset_path": "C:\\Users\\admin\\Documents\\sagemaker_thai-ocr\\thai-letters\\datasets\\converted\\single_char_data\\train_data\\rec",
+  "status": "ready_for_training"
+}
