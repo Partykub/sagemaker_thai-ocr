@@ -1,235 +1,174 @@
-# 🔥 Thai OCR Dataset Generator - Phase 1 Complete
+# Thai OCR Dataset Generator (Enhanced)
 
-🎯 **Complete Thai Dataset Generation & PaddleOCR Conversion System**
+## 📋 Overview
+สคริปต์ `thai_dataset_quick.py` เป็นเครื่องมือสร้าง dataset ภาษาไทยที่ได้รับการปรับปรุงใหม่ โดยมีฟีเจอร์การเลือก dictionary และเอฟเฟคต่างๆ พร้อมรูปภาพขนาดใหม่ที่เหมาะสำหรับ OCR
 
-A comprehensive toolkit for generating high-quality Thai character datasets and converting them to PaddleOCR training format - following the complete Phase 1 methodology.
+## 🎯 ฟีเจอร์หลัก
 
-## 🚀 Phase 1: Complete Workflow
+### � Dictionary Selection
+- เลือกไฟล์ dictionary แบบ interactive
+- รองรับไฟล์ที่ลงท้ายด้วย `_dict.txt`
+- แสดงจำนวนตัวอักษรในแต่ละไฟล์
 
-### Step 1: Generate Thai Dataset
+### 🎛️ Effects Selection (8 ประเภท)
+1. **การหมุน (Rotation)**: -2 ถึง +2 องศา
+2. **ความสว่าง (Brightness)**: 0.8-1.2
+3. **ความคมชัด (Contrast)**: 0.8-1.2
+4. **การเบลอ (Blur)**: 0-0.4
+5. **สัญญาณรบกวน (Noise Level)**: 0-0.05
+6. **ตำแหน่ง (Position)**: center-left, center, center-right
+7. **ระยะห่าง (Padding)**: 15-25 พิกเซล
+8. **การบีบอัด (Compression)**: 85-100% คุณภาพ
+
+### 📐 Enhanced Image Size
+- **ใหม่**: `128 x 96` pixels (+50% ความสูง)
+- **ฟอนต์ใหม่**: 42-84 pixels (เพิ่มขนาดใหญ่สุด)
+- เหมาะสำหรับตัวอักษรไทยที่มีเครื่องหมายวรรณยุกต์
+
+## 🚀 วิธีใช้งาน
+
 ```bash
-# Generate standard dataset (recommended)
+# เข้าโฟลเดอร์ thai-letters
+cd thai-letters
+
+# รันสคริปต์
+python thai_dataset_quick.py <จำนวนตัวอย่าง>
+```
+
+### ตัวอย่างการใช้งาน
+
+```bash
+# ทดสอบเร็ว
+python thai_dataset_quick.py 1
+
+# มาตรฐาน (แนะนำ)
 python thai_dataset_quick.py 10
 
-# Small test dataset
-python thai_dataset_quick.py 5
+# คุณภาพสูง
+python thai_dataset_quick.py 20
 
-# Large production dataset
-python thai_dataset_quick.py 30
+# สำหรับ production
+python thai_dataset_quick.py 50
 ```
 
-### Step 2: Convert to PaddleOCR Format
+## 🎛️ ตัวเลือกการใช้งาน
+
+### 📚 การเลือก Dictionary:
+```
+📚 เลือกไฟล์ Dictionary:
+----------------------------------------
+  1. number_dict.txt (11 characters)
+  2. th_dict.txt (881 characters)
+----------------------------------------
+กรุณาเลือก (1-2): 1
+✅ เลือก: number_dict.txt
+```
+
+### 🎨 การเลือกเอฟเฟค:
+```
+🎛️ เลือกเอฟเฟค/อุปสรรคที่ต้องการ:
+============================================================
+  1. การหมุน (rotation)
+  2. ความสว่าง (brightness)
+  3. ความคมชัด (contrast)
+  4. การเบลอ (blur)
+  5. สัญญาณรบกวน (noise_level)
+  6. ตำแหน่ง (position)
+  7. ระยะห่าง (padding)
+  8. การบีบอัด (compression)
+  
+  9. ✨ ใช้ทั้งหมด (แนะนำ)
+  0. � ไม่ใช้เอฟเฟค (ภาพเปล่า)
+------------------------------------------------------------
+🎯 เลือกหมายเลข (คั่นด้วย , หากเลือกหลายตัว เช่น 1,2,3): 0
+```
+
+### 🎯 ตัวเลือกพิเศษ:
+- **0**: ไม่ใช้เอฟเฟค (ภาพในอุดมคติ - ideal conditions)
+- **9**: ✨ ใช้เอฟเฟคทั้งหมด (แนะนำ)
+- **1,2,3**: เลือกเฉพาะเอฟเฟคที่ต้องการ
+
+## 📁 ผลลัพธ์
+
+### โครงสร้างไฟล์:
+```
+datasets/raw/thai_dataset_minimal_1samples_number_dict_ocr_focused_0806_1409/
+├── images/                    # รูปภาพที่สร้าง
+├── labels.txt                 # ป้ายกำกับ
+└── dataset_details.json       # สถิติและรายละเอียด
+```
+
+### ตัวอย่างชื่อโฟลเดอร์:
+- `thai_dataset_minimal_1samples_number_dict_ideal_conditions_0806_1424`
+- `thai_dataset_minimal_1samples_number_dict_rot_brt_con_0806_1424`
+- `thai_dataset_standard_10samples_th_dict_all_effects_0806_1424`
+
+## � การปรับปรุงในเวอร์ชันนี้
+
+### ✅ ฟีเจอร์ใหม่:
+1. **Interactive Dictionary Selection**: เลือกไฟล์ dict แบบ interactive
+2. **Flexible Effects Selection**: เลือกเอฟเฟคได้ตามต้องการ
+3. **Enhanced Image Size**: เพิ่มความสูงจาก 64 เป็น 96 pixels (+50%)
+4. **Improved Font Sizes**: เพิ่มขนาดฟอนต์ขึ้นถึง 84 pixels
+5. **Better Output Naming**: ชื่อโฟลเดอร์บอกเอฟเฟคที่ใช้ได้ชัดเจน
+
+### 🔧 การปรับปรุงระบบ:
+- แก้ไขไฟล์เดิม `thai_dataset_quick.py` แทนการสร้างไฟล์ใหม่
+- ลบไฟล์ v2 เพื่อไม่ให้สับสน
+- เชื่อมต่อการเลือกเอฟเฟคกับ `thai_dataset_generator.py` สำเร็จ
+- แก้ไขปัญหา "no effects" ที่ยังมีเอฟเฟคปรากฏ
+
+## 🎓 คำแนะนำการใช้งาน
+
+### สำหรับการทดสอบ:
 ```bash
-# Quick conversion (recommended)
-python quick_phase1_converter.py
-
-# Or use batch file on Windows
-quick_phase1_converter.bat
-
-# Manual conversion
-python phase1_paddleocr_converter.py thai_dataset_comprehensive_30samples_0722_1551
+python thai_dataset_quick.py 1     # เลือก dictionary → เลือก 0 (no effects)
 ```
 
-## 📦 What's Included
-
-### 🔥 Phase 1: Complete Dataset Pipeline
-- **`phase1_thai_dataset_complete.py`** - Complete Phase 1 implementation (NEW)
-- **`phase1_paddleocr_converter.py`** - Convert to PaddleOCR format (NEW)
-- **`quick_phase1_converter.py`** - One-click converter (NEW)
-- **`quick_phase1_converter.bat`** - Windows batch converter (NEW)
-
-### 🎯 Main Generators
-- **`thai_dataset_generator.py`** - Optimized generator (8 obstacles, 99.8% success)
-- **`thai_dataset_generator_advanced.py`** - Advanced generator (15 obstacles)
-- **`thai_dataset_quick.py`** - Easy-to-use helper
-
-### 🛠️ Helper Tools
-- **`thai_generator_helper.py`** - Interactive command builder
-- **`thai_dataset_quick.bat`** - Windows batch menu
-
-### 📚 Documentation & Data Files
-- **`th_dict.txt`** - 879 Thai characters dictionary
-- **`thai_corpus.txt`** - Thai text corpus
-- **`thai_dataset_sample/`** - Sample generated dataset
-
-## 🎨 Features
-
-### 🔥 Phase 1: Complete Implementation
-- **รวบรวมรูปภาพข้อความภาษาไทย** - Multi-font, multi-background synthesis
-- **สร้างไฟล์ Dictionary** - Complete Thai character dictionary (879 chars)
-- **สร้างไฟล์ Corpus** - Thai text corpus with 9,000+ words
-- **ติดป้ายกำกับข้อมูล** - Auto-annotation with validation
-- **จัดโครงสร้างชุดข้อมูล** - PaddleOCR standard format
-- **One-click conversion** - Easy dataset conversion to PaddleOCR
-
-### ✅ Optimized Obstacles (8 types)
-- **Rotation**: ±2 degrees (gentle)
-- **Brightness**: 0.8-1.2 (readable)
-- **Contrast**: 0.8-1.2 (clear)
-- **Blur**: 0-0.4 (minimal)
-- **Noise**: 0-0.05 (low)
-- **Position**: 3 variants (centered)
-- **Padding**: 15-25 pixels
-- **Compression**: 85-100% quality
-
-### 📊 High Success Rate
-- **99.8% success rate** (almost no errors)
-- **Character visibility enhanced**
-- **Suitable for OCR training**
-
-### 🚀 Easy Usage
-- **Command line interface**
-- **Auto-generated output names**
-- **Statistics and JSON output**
-- **Cross-platform support**
-
-## 🎯 Usage Examples
-
-### Basic Usage
+### สำหรับการฝึกโมเดล:
 ```bash
-python thai_dataset_generator.py 15
+python thai_dataset_quick.py 10    # เลือก dictionary → เลือก 9 (all effects)
 ```
 
-### Advanced Usage
+### สำหรับการใช้งานเฉพาะ:
 ```bash
-python thai_dataset_generator.py 20 -d th_dict.txt -o my_custom_dataset
+python thai_dataset_quick.py 5     # เลือก dictionary → เลือก 1,2,6 (rotation, brightness, position)
 ```
 
-### Quick Generation
-```bash
-# Interactive menu
-python thai_dataset_quick.py 10
+## 🔧 ข้อมูลทางเทคนิค
 
-# Windows batch file
-thai_dataset_quick.bat
-```
+### ขนาดภาพที่ปรับปรุง:
+- **เดิม**: 128 x 64 pixels (อัตราส่วน 2:1)
+- **ใหม่**: 128 x 96 pixels (อัตราส่วน 4:3, +50% ความสูง)
 
-## 📁 Output Structure (Organized)
+### ขนาดฟอนต์ที่รองรับ:
+- **เดิม**: 36-72 pixels
+- **ใหม่**: 42-84 pixels (เพิ่มขนาดใหญ่สุด)
 
-### 📂 New Organized Directory Structure:
-```
-thai-letters/
-├── datasets/                    # 🎯 โฟลเดอร์เก็บ datasets ทั้งหมด
-│   ├── raw/                     # Dataset ดิบที่สร้างใหม่
-│   │   ├── thai_dataset_minimal_3samples_[timestamp]/
-│   │   ├── thai_dataset_standard_10samples_[timestamp]/
-│   │   └── thai_dataset_comprehensive_30samples_[timestamp]/
-│   ├── converted/               # Dataset ที่แปลงเป็น PaddleOCR format แล้ว
-│   │   └── train_data_thai_paddleocr_[timestamp]/
-│   └── samples/                 # Dataset ตัวอย่างขนาดเล็ก
-│       └── sample_dataset_100chars/
-├── scripts/                     # Scripts สำหรับสร้าง dataset
-│   └── dataset_manager.py       # จัดการ datasets (อนาคต)
-├── README.md
-└── requirements.txt
-```
+### ประโยชน์ของความสูงใหม่:
+1. **👁️ อ่านง่ายขึ้น**: ตัวอักษรไทยมีพื้นที่มากขึ้นสำหรับเครื่องหมายวรรณยุกต์
+2. **🔍 ความละเอียดดีขึ้น**: OCR สามารถแยกแยะรายละเอียดได้ดีกว่า
+3. **📐 อัตราส่วนเหมาะสม**: 4:3 เหมาะสำหรับตัวอักษรไทยที่มีความสูง
+4. **🚀 ประสิทธิภาพดีขึ้น**: รองรับฟอนต์ขนาดใหญ่ได้ดีกว่า
 
-### Original Dataset Format (in datasets/raw/):
-```
-datasets/raw/thai_dataset_standard_10samples_0730_1234/
-├── images/
-│   ├── 000_00.jpg    # Character 1, Sample 1
-│   ├── 000_01.jpg    # Character 1, Sample 2
-│   └── ...
-├── labels.txt        # Image-to-character mapping
-└── optimized_dataset_details.json  # Statistics & config
-```
+## 📋 สถานะการพัฒนา
 
-### PaddleOCR Training Format (in datasets/converted/):
-```
-datasets/converted/train_data_thai_paddleocr_0730_1234/
-├── train_data/
-│   ├── rec/
-│   │   ├── thai_data/
-│   │   │   ├── train/           # Training images (80%)
-│   │   │   └── val/             # Validation images (20%)
-│   │   ├── rec_gt_train.txt     # Training labels
-│   │   └── rec_gt_val.txt       # Validation labels
-│   ├── th_dict.txt              # Thai character dictionary
-│   └── th_corpus.txt            # Thai text corpus
-├── thai_svtr_tiny_config.yml    # PaddleOCR training config
-└── PHASE1_PADDLEOCR_CONVERSION_REPORT.md
-```
+### ✅ เสร็จสมบูรณ์:
+- [x] Interactive dictionary selection
+- [x] Flexible effects selection  
+- [x] Enhanced image size (128x96)
+- [x] Improved font size range
+- [x] Better output folder naming
+- [x] Effects parameter integration
+- [x] "No effects" bug fix
+- [x] File consolidation (removed v2)
 
-## 🎨 Dataset Categories
-
-| Samples | Category | Use Case | Generation Time |
-|---------|----------|----------|----------------|
-| 5 | Test | Quick testing | 2-3 minutes |
-| 10-15 | Standard | OCR training | 5-8 minutes |
-| 20-30 | Large | High quality | 10-15 minutes |
-| 50+ | Production | Professional | 20+ minutes |
-
-## 🔧 Requirements
-
-```bash
-pip install pillow opencv-python numpy
-```
-
-## 📊 Comparison
-
-| Generator | Obstacles | Success Rate | Character Visibility | Use Case |
-|-----------|-----------|--------------|---------------------|----------|
-| **Main** | 8 types | 99.8% | Excellent | Production |
-| **Advanced** | 15 types | 94.6% | Good | Research |
-
-## 🎉 Why Choose This Generator?
-
-1. **🎯 Optimized for OCR** - Perfect balance of variation and readability
-2. **⚡ Fast & Reliable** - 99.8% success rate with minimal errors
-3. **🔧 Easy to Use** - Simple command line interface
-4. **📊 Complete Output** - Images, labels, and statistics included
-5. **🌐 Cross-platform** - Works on Windows, Mac, and Linux
-6. **🎨 Flexible** - Multiple generators for different needs
-
-## 🚀 Get Started
-
-### Phase 1: Complete Thai OCR Dataset Pipeline
-
-1. **Install dependencies**: 
-   ```bash
-   pip install pillow opencv-python numpy paddlepaddle-gpu paddleocr
-   ```
-
-2. **Generate Thai dataset**: 
-   ```bash
-   python thai_dataset_quick.py 15
-   ```
-
-3. **Convert to PaddleOCR format**: 
-   ```bash
-   python quick_phase1_converter.py
-   ```
-
-4. **Start PaddleOCR training**: 
-   ```bash
-   cd train_data_thai_paddleocr_[timestamp]
-   python -m paddle.distributed.launch --gpus="0" tools/train.py -c thai_svtr_tiny_config.yml
-   ```
-
-### Quick Testing:
-```bash
-# Generate small test dataset  
-python thai_dataset_quick.py 5
-
-# Convert to PaddleOCR
-python quick_phase1_converter.py
-
-# Your dataset is ready for training!
-```
-
-## 🎯 Phase 1 Completion Checklist
-
-- [x] **1.1** รวบรวมรูปภาพข้อความภาษาไทย ✅
-- [x] **1.2** สร้างไฟล์ Dictionary (th_dict.txt) ✅  
-- [x] **1.3** สร้างไฟล์ Corpus (th_corpus.txt) ✅
-- [x] **1.4** ติดป้ายกำกับข้อมูล (Annotation) ✅
-- [x] **1.5** จัดโครงสร้างชุดข้อมูล ✅
-- [x] **1.6** แปลงเป็น PaddleOCR Format ✅
-
-Perfect for OCR researchers, AI developers, and anyone working with Thai text recognition!
+### 🎯 การทดสอบ:
+- [x] ทดสอบการเลือก dictionary สำเร็จ
+- [x] ทดสอบการเลือกเอฟเฟคสำเร็จ
+- [x] ทดสอบขนาดภาพใหม่สำเร็จ
+- [x] ทดสอบการสร้างโฟลเดอร์สำเร็จ
 
 ---
 
-**🔥 Phase 1 Complete: Ready for PaddleOCR Training!**
-**⭐ Star this project if it helps you create better Thai OCR models!**
+สคริปต์นี้จะช่วยให้การสร้าง dataset มีความยืดหยุ่นและเหมาะสมกับการใช้งาน OCR ภาษาไทยมากขึ้น! 🚀

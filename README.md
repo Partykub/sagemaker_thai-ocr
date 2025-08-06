@@ -2,10 +2,17 @@
 
 A comprehensive Optical Character Recognition (OCR) solution for the Thai language built on PaddleOCR. This project provides scripts for data generation, dataset conversion, model training, and deployment on AWS SageMaker with infrastructure managed by Terraform.
 
-## 🎯 Project Status (January 8, 2025)
+## 🎯 Project Status (August 6, 2025)
+
+### ✅ Latest Updates - Enhanced Dataset Generator
+- **Enhanced UI**: Interactive dictionary and effects selection
+- **Improved Image Quality**: Increased image height from 64 to 96 pixels (+50%)
+- **Flexible Effects**: Choose from 8 different OCR challenge types
+- **Better Integration**: Seamless parameter passing between scripts
+- **File Consolidation**: Single enhanced `thai_dataset_quick.py` file
 
 ### ✅ Completed Milestones
-- **Data Generation**: 9,408 synthetic Thai text images with multiple fonts
+- **Data Generation**: Enhanced with interactive selection and flexible effects
 - **Dataset Conversion**: Successfully converted to PaddleOCR format with train/validation split
 - **Infrastructure Setup**: AWS SageMaker, ECR, S3 resources deployed via Terraform
 - **Model Training**: 25+ hour training on SageMaker ml.g4dn.xlarge instance completed
@@ -50,6 +57,42 @@ A comprehensive Optical Character Recognition (OCR) solution for the Thai langua
 - **Character Type**: thai
 - **Use Space Char**: false
 - **Architecture**: CRNN + MobileNetV3 (same as inference)
+
+## 🚀 Quick Start - Enhanced Dataset Generation
+
+### Basic Usage
+```bash
+# Navigate to data generation folder
+cd thai-letters
+
+# Generate dataset with interactive selection
+python thai_dataset_quick.py 10
+
+# Follow the prompts:
+# 1. Select dictionary file (number_dict.txt or th_dict.txt)
+# 2. Choose effects (0=none, 9=all, or specific combinations like 1,2,3)
+```
+
+### Advanced Examples
+```bash
+# Quick test with no effects
+python thai_dataset_quick.py 1
+# → Choose dictionary → Select 0 (no effects) → Get clean images
+
+# Standard training dataset
+python thai_dataset_quick.py 20
+# → Choose dictionary → Select 9 (all effects) → Get varied dataset
+
+# Custom effects (rotation + brightness + blur)
+python thai_dataset_quick.py 15
+# → Choose dictionary → Select 1,2,4 → Get specific effects
+```
+
+### New Features ✨
+- **Interactive Dictionary Selection**: Choose from available `*_dict.txt` files
+- **Flexible Effects**: 8 OCR challenge types (rotation, brightness, contrast, blur, etc.)
+- **Enhanced Image Size**: 128x96 pixels (+50% height for Thai characters)
+- **Smart Naming**: Output folders include effects info automatically
 
 ### 🧪 Testing Configuration (STANDARDIZED)
 

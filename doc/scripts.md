@@ -6,7 +6,72 @@ This document outlines all scripts in the Thai OCR project, their purposes, usag
 
 The `scripts/` directory contains automation and management scripts for the Thai OCR project. Scripts are organized by functionality and follow consistent naming conventions.
 
-## 🎯 Current Project Status & Verified Scripts
+## 🎯 Recent Updates (August 6, 2025)
+
+### ✨ **Enhanced Dataset Generation**
+
+#### `thai-letters/thai_dataset_quick.py` - **ENHANCED INTERACTIVE GENERATOR**
+**Purpose**: Interactive Thai dataset generation with flexible dictionary and effects selection
+
+**Description**: 
+- Interactive dictionary file selection from available `*_dict.txt` files
+- Flexible effects selection (8 OCR challenge types)
+- Enhanced image dimensions (128x96 pixels, +50% height)
+- Improved font size range (42-84 pixels)
+- Smart output folder naming with effects information
+- Seamless integration with `thai_dataset_generator.py`
+
+**Usage**:
+```bash
+# Navigate to thai-letters folder
+cd thai-letters
+
+# Interactive dataset generation
+python thai_dataset_quick.py <number_of_samples>
+
+# Examples:
+python thai_dataset_quick.py 1    # Quick test
+python thai_dataset_quick.py 10   # Standard
+python thai_dataset_quick.py 20   # High quality
+```
+
+**Interactive Selections**:
+1. **Dictionary Selection**: Choose from available dictionary files
+2. **Effects Selection**: 
+   - `0`: No effects (ideal conditions)
+   - `9`: All effects (recommended)
+   - `1,2,3`: Specific effects (custom combinations)
+
+**Available Effects (8 types)**:
+- Rotation (-2 to +2 degrees)
+- Brightness (0.8-1.2)
+- Contrast (0.8-1.2)
+- Blur (0-0.4)
+- Noise Level (0-0.05)
+- Position (center-left, center, center-right)
+- Padding (15-25 pixels)
+- Compression (85-100% quality)
+
+**When to use**:
+- ✅ Creating training datasets with specific characteristics
+- ✅ Testing OCR robustness with controlled challenges
+- ✅ Generating clean reference images (effects=0)
+- ✅ Producing varied datasets for model training (effects=9)
+
+**Key Features**:
+- ✅ Interactive user interface
+- ✅ Flexible effects combinations
+- ✅ Enhanced image quality (128x96 pixels)
+- ✅ Smart folder naming system
+- ✅ Parameter integration with generator
+- ✅ Support for multiple dictionary files
+
+**Recent Improvements**:
+- Enhanced from previous `thai_dataset_quick_v2.py`
+- Fixed "no effects" functionality
+- Improved parameter passing to core generator
+- Better output folder naming with effects information
+- Removed redundant v2 file for cleaner project structure
 
 ### ✅ **Completed & Working Scripts**
 

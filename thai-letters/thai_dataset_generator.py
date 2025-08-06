@@ -15,18 +15,18 @@ import argparse
 from datetime import datetime
 
 class OptimizedThaiGenerator:
-    def __init__(self, output_dir="thai_dataset_production", samples_per_char=10):
+    def __init__(self, output_dir="thai_dataset_production", samples_per_char=10, enabled_effects=None):
         self.output_dir = output_dir
         self.samples_per_char = samples_per_char
-        self.image_size = (128, 64)
+        self.image_size = (128, 96)  # เพิ่มความสูงจาก 64 เป็น 96 pixel
         
         # ฟอนต์และขนาด
         self.font_path = self._find_tahoma_font()
-        # ขนาด font ที่หลากหลาย (เพิ่มขนาดใหญ่ขึ้น)
-        self.font_sizes = [36, 42, 48, 54, 60, 66, 72]
+        # ขนาด font ที่หลากหลาย (เพิ่มขนาดใหญ่ขึ้นสำหรับความสูงใหม่)
+        self.font_sizes = [42, 48, 54, 60, 66, 72, 78, 84]
         
         # อุปสรรคที่เหมาะสม (ลดจาก 15 เหลือ 8 ประเภท)
-        self.obstacles = {
+        self.all_obstacles = {
             # การหมุนเล็กน้อย (ลดลง)
             'rotation': [-2, -1, 0, 1, 2],
             
@@ -51,6 +51,45 @@ class OptimizedThaiGenerator:
             # การบีบอัดคุณภาพดี (เฉพาะคุณภาพสูง)
             'compression': [85, 90, 95, 100]
         }
+        
+        # เลือกเอฟเฟคที่จะใช้
+        if enabled_effects is None or enabled_effects == 'all':
+            self.obstacles = self.all_obstacles.copy()
+        elif enabled_effects == 'none':
+            # ไม่ใช้เอฟเฟคเลย - ภาพเปล่า
+            self.obstacles = {
+                'rotation': [0],  # ไม่หมุน
+                'brightness': [1.0],  # ความสว่างปกติ
+                'contrast': [1.0],  # คอนทราสต์ปกติ
+                'blur': [0],  # ไม่เบลอ
+                'noise_level': [0],  # ไม่มีสัญญาณรบกวน
+                'position': ['center'],  # ตรงกลาง
+                'padding': [20],  # ระยะห่างมาตรฐาน
+                'compression': [100]  # คุณภาพสูงสุด
+            }
+        else:
+            # ใช้เอฟเฟคที่เลือก
+            selected_effects = [effect.strip() for effect in enabled_effects.split(',')]
+            self.obstacles = {}
+            for effect in selected_effects:
+                if effect in self.all_obstacles:
+                    self.obstacles[effect] = self.all_obstacles[effect]
+            
+            # เพิ่มค่าเริ่มต้นสำหรับเอฟเฟคที่ไม่ได้เลือก
+            defaults = {
+                'rotation': [0],
+                'brightness': [1.0],
+                'contrast': [1.0],
+                'blur': [0],
+                'noise_level': [0],
+                'position': ['center'],
+                'padding': [20],
+                'compression': [100]
+            }
+            
+            for key, default_value in defaults.items():
+                if key not in self.obstacles:
+                    self.obstacles[key] = default_value
         
         # สถิติ
         self.stats = {
@@ -392,6 +431,8 @@ def main():
                        help='Output directory (default: auto-generated)')
     parser.add_argument('--show-obstacles', action='store_true',
                        help='Show optimized obstacles and exit')
+    parser.add_argument('--effects', default='all',
+                       help='Effects to apply (comma-separated list or "none" or "all")')
     
     args = parser.parse_args()
     
@@ -417,10 +458,15 @@ def main():
     print(f"🎯 Creating optimized dataset: {args.samples} samples per character")
     print(f"📖 Dictionary: {args.dict}")
     print(f"📁 Output: {args.output}")
-    print(f"👁️  Optimization: Character visibility enhanced")
+    if args.effects == 'none':
+        print(f"🎛️  Effects: None (ideal conditions)")
+    elif args.effects == 'all':
+        print(f"👁️  Optimization: Character visibility enhanced")
+    else:
+        print(f"🎛️  Effects: {args.effects}")
     
-    # สร้าง generator
-    generator = OptimizedThaiGenerator(args.output, args.samples)
+    # สร้าง generator พร้อมการเลือกเอฟเฟค
+    generator = OptimizedThaiGenerator(args.output, args.samples, args.effects)
     
     # สร้าง dataset
     generator.generate_optimized_dataset(args.dict)
