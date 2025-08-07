@@ -276,6 +276,10 @@ For detailed script usage, see [`doc/scripts.md`](doc/scripts.md):
 - [Terraform Infrastructure](doc/terraform.md)
 - [Development Task List](development-task.md)
 
+### 🇹🇭 เอกสารภาษาไทย (Thai Documentation)
+- **[คู่มือการเทรน SageMaker](doc/sagemaker-training-guide.md)** - ครบวงจรการเทรน Thai OCR บน AWS SageMaker
+- **[สรุปโครงการ](doc/thai-project-summary.md)** - ภาพรวมโครงการและแผนการพัฒนา
+
 ## License
 
 This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.

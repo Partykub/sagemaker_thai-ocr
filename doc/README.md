@@ -18,6 +18,7 @@ Welcome to the documentation for the Thai OCR project. This guide will help you 
 ### **📊 Data & Training**
 - **[Dataset Generation & Conversion](dataset.md)** - Data generation, conversion, and processing ✅
 - **[Training Pipeline](training.md)** - Complete training procedures and configurations ✅
+- **[SageMaker Training Guide](sagemaker-training-guide.md)** - ครบวงจรการเทรน Thai OCR บน AWS SageMaker ⭐ **NEW**
 - **[Model Testing](model-testing.md)** - Comprehensive testing procedures and validation ⭐ **NEW**
 
 ### **🚀 Deployment & Infrastructure**  
@@ -32,6 +33,10 @@ Welcome to the documentation for the Thai OCR project. This guide will help you 
 
 ### **📝 Usage & Examples**
 - **[Model Usage & Inference Guide](model-usage.md)** - Practical usage examples and code samples
+
+### **🇹🇭 เอกสารภาษาไทย**
+- **[คู่มือการเทรน SageMaker](sagemaker-training-guide.md)** - ครบวงจรการเทรน Thai OCR บน AWS SageMaker ⭐ **NEW**
+- **[สรุปโครงการ](thai-project-summary.md)** - ภาพรวมโครงการและแผนการพัฒนา ⭐ **NEW**
 
 ## Quick Links
 

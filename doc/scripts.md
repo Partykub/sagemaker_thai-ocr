@@ -860,3 +860,161 @@ scripts/
 - Integration with CI/CD pipelines
 - Automated testing for scripts
 - Cross-platform compatibility enhancements
+
+---
+
+## 🚀 **SageMaker Training Scripts**
+
+### `scripts/continue_deployment_v2.py` - **COMPLETE SAGEMAKER TRAINING AUTOMATION**
+**Purpose**: Fully automated Thai OCR training deployment on AWS SageMaker
+
+**Description**: 
+- Complete end-to-end SageMaker training automation
+- Docker container building and ECR push
+- Training job creation and monitoring
+- Handles all AWS resource management automatically
+- Verified working configuration for Thai OCR training
+
+**Usage**:
+```bash
+# Complete automated deployment (recommended)
+python scripts/continue_deployment_v2.py
+
+# The script will:
+# 1. Build Docker container with PaddleOCR and dependencies
+# 2. Push container to ECR repository
+# 3. Upload training data to S3 (if needed)
+# 4. Create SageMaker training job
+# 5. Monitor training progress
+# 6. Download trained model artifacts
+```
+
+**When to use**:
+- Starting a new training run on SageMaker
+- Need complete automated setup
+- Production training deployments
+
+**Key Features**:
+- ✅ Automated Docker build and ECR push
+- ✅ S3 data upload management
+- ✅ SageMaker job creation with optimal settings
+- ✅ Real-time training monitoring
+- ✅ Cost tracking and estimation
+- ✅ Error handling and retry logic
+
+### `scripts/deploy_sagemaker_training.py` - **MANUAL SAGEMAKER TRAINING**
+**Purpose**: Manual SageMaker training job creation and management
+
+**Description**: 
+- Create SageMaker training jobs with custom parameters
+- Support for different instance types and configurations
+- Manual control over training hyperparameters
+- Integration with existing Docker containers
+
+**Usage**:
+```bash
+# Basic training job
+python scripts/deploy_sagemaker_training.py
+
+# With custom parameters
+python scripts/deploy_sagemaker_training.py \
+  --instance-type ml.g4dn.xlarge \
+  --epochs 100 \
+  --learning-rate 0.001
+```
+
+**When to use**:
+- Need custom training configurations
+- Experimenting with different hyperparameters
+- Manual control over training process
+
+**Key Features**:
+- ✅ Customizable training parameters
+- ✅ Multiple instance type support
+- ✅ Integration with existing infrastructure
+- ✅ Manual training job management
+
+### `scripts/easy_single_char_training.py` - **SIMPLIFIED TRAINING SETUP**
+**Purpose**: Simplified setup for single character Thai OCR training
+
+**Description**: 
+- Streamlined setup for single character recognition
+- Optimized configurations for Thai character training
+- Reduced complexity for quick experiments
+- Focus on single character accuracy improvement
+
+**Usage**:
+```bash
+# Quick single character training setup
+python scripts/easy_single_char_training.py
+
+# With specific configuration
+python scripts/easy_single_char_training.py --config quick_single_char_config.yml
+```
+
+**When to use**:
+- Focusing on single character recognition
+- Quick experiments and testing
+- Debugging character-specific issues
+
+**Key Features**:
+- ✅ Single character optimizations
+- ✅ Simplified configuration management
+- ✅ Quick setup and testing
+- ✅ Thai character specific enhancements
+
+### `scripts/training/sagemaker_train.py` - **SAGEMAKER TRAINING ENTRY POINT**
+**Purpose**: Main training script executed inside SageMaker containers
+
+**Description**: 
+- Entry point script for SageMaker training jobs
+- Handles SageMaker environment setup
+- Integrates with PaddleOCR training pipeline
+- Manages model output and artifacts
+
+**Usage**:
+```bash
+# This script is executed automatically by SageMaker
+# Inside the Docker container during training
+python sagemaker_train.py --epochs 100 --learning_rate 0.001
+```
+
+**When to use**:
+- Executed automatically by SageMaker
+- Part of the Docker container training process
+- No direct user interaction required
+
+**Key Features**:
+- ✅ SageMaker environment integration
+- ✅ PaddleOCR training pipeline integration
+- ✅ Model artifact management
+- ✅ Training monitoring and logging
+
+### `scripts/utils/monitor_training.py` - **TRAINING MONITORING UTILITY**
+**Purpose**: Real-time monitoring of SageMaker training jobs
+
+**Description**: 
+- Real-time training job status monitoring
+- CloudWatch logs integration
+- Training metrics visualization
+- Cost tracking during training
+
+**Usage**:
+```bash
+# Monitor specific training job
+python scripts/utils/monitor_training.py paddleocr-thai-training-20250807-120000
+
+# Continuous monitoring with custom interval
+python scripts/utils/monitor_training.py <job-name> --interval 60
+```
+
+**When to use**:
+- Monitoring active training jobs
+- Tracking training progress
+- Debugging training issues
+
+**Key Features**:
+- ✅ Real-time status updates
+- ✅ CloudWatch logs integration
+- ✅ Training metrics display
+- ✅ Cost estimation and tracking
