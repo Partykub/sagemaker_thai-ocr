@@ -3,31 +3,17 @@ Global:
   epoch_num: 100
   log_smooth_window: 20
   print_batch_step: 10
-  save_model_dir: ./output/thai_rec/
+  save_model_dir: ./output/rec/
   save_epoch_step: 10
   eval_batch_step: 500
   cal_metric_during_train: true
-  pretrained_model: C:\Users\admin\Documents\sagemaker_thai-ocr\models\sagemaker_trained\best_model/model
-  character_dict_path: C:\Users\admin\Documents\sagemaker_thai-ocr\thai-letters\th_dict.txt
-  character_type: thai
-  max_text_length: 25
+  pretrained_model: C:\Users\admin\Documents\sagemaker_thai-ocr\models\sagemaker_trained/best_accuracy
+  character_dict_path: C:\Users\admin\Documents\sagemaker_thai-ocr\numbers_dict.txt
+  character_type: EN  # English/Numbers
+  max_text_length: 1  # Single character
   infer_mode: true
   use_space_char: false
-  distributed: false
-  save_res_path: ./inference_results.txt
-  infer_img: ./test_images/
-
-Optimizer:
-  name: Adam
-  beta1: 0.9
-  beta2: 0.999
-  lr:
-    name: Cosine
-    learning_rate: 0.001
-    warmup_epoch: 5
-  regularizer:
-    name: L2
-    factor: 3.0e-05
+  save_res_path: ./numbers_inference_results.txt
 
 Architecture:
   model_type: rec
@@ -37,7 +23,7 @@ Architecture:
     name: MobileNetV3
     scale: 0.5
     model_name: large
-    disable_se: false
+    small_stride: [1, 2, 2, 2]
   Neck:
     name: SequenceEncoder
     encoder_type: rnn
@@ -66,9 +52,10 @@ Train:
     - DecodeImage:
         img_mode: BGR
         channel_first: false
+    - RecAug:
     - CTCLabelEncode:
     - RecResizeImg:
-        image_shape: [3, 32, 100]
+        image_shape: [3, 32, 128]
     - KeepKeys:
         keep_keys:
         - image
@@ -76,9 +63,9 @@ Train:
         - length
   loader:
     shuffle: true
-    batch_size_per_card: 256
+    batch_size_per_card: 64
     drop_last: true
-    num_workers: 8
+    num_workers: 4
 
 Eval:
   dataset:
@@ -92,7 +79,7 @@ Eval:
         channel_first: false
     - CTCLabelEncode:
     - RecResizeImg:
-        image_shape: [3, 32, 100]
+        image_shape: [3, 32, 128]
     - KeepKeys:
         keep_keys:
         - image
@@ -101,5 +88,5 @@ Eval:
   loader:
     shuffle: false
     drop_last: false
-    batch_size_per_card: 256
+    batch_size_per_card: 64
     num_workers: 4

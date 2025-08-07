@@ -1,0 +1,43 @@
+THAI NUMBERS OCR - VALIDATION DATA REPORT
+==================================================
+
+Dataset: train_data_thai_paddleocr_0806_1433
+Total validation samples: 60
+Date: 2025-08-07
+
+SAMPLE DATA (First 20 samples):
+------------------------------
+ 1. thai_data/val/002_16.jpg → '3' (3131 bytes)
+ 2. thai_data/val/000_15.jpg → '1' (1587 bytes)
+ 3. thai_data/val/007_06.jpg → '8' (2809 bytes)
+ 4. thai_data/val/004_16.jpg → '5' (2282 bytes)
+ 5. thai_data/val/002_10.jpg → '3' (2444 bytes)
+ 6. thai_data/val/008_03.jpg → '9' (2605 bytes)
+ 7. thai_data/val/009_16.jpg → '0' (2180 bytes)
+ 8. thai_data/val/008_18.jpg → '9' (2039 bytes)
+ 9. thai_data/val/005_09.jpg → '6' (2766 bytes)
+10. thai_data/val/003_26.jpg → '4' (1594 bytes)
+11. thai_data/val/005_08.jpg → '6' (2495 bytes)
+12. thai_data/val/001_24.jpg → '2' (2493 bytes)
+13. thai_data/val/007_14.jpg → '8' (2809 bytes)
+14. thai_data/val/004_27.jpg → '5' (1985 bytes)
+15. thai_data/val/000_19.jpg → '1' (1587 bytes)
+16. thai_data/val/003_04.jpg → '4' (1938 bytes)
+17. thai_data/val/003_27.jpg → '4' (2544 bytes)
+18. thai_data/val/005_07.jpg → '6' (3340 bytes)
+19. thai_data/val/007_19.jpg → '8' (3603 bytes)
+20. thai_data/val/004_06.jpg → '5' (2262 bytes)
+... and 40 more samples
+
+LABEL DISTRIBUTION:
+--------------------
+'0': 6 samples (10.0%)
+'1': 6 samples (10.0%)
+'2': 4 samples (6.7%)
+'3': 5 samples (8.3%)
+'4': 7 samples (11.7%)
+'5': 7 samples (11.7%)
+'6': 8 samples (13.3%)
+'7': 3 samples (5.0%)
+'8': 7 samples (11.7%)
+'9': 7 samples (11.7%)

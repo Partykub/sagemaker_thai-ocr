@@ -1,0 +1,90 @@
+Global:
+  use_gpu: false                    # SageMaker CPU training
+  distributed: false               # Disable distributed for SageMaker
+  epoch_num: 50                    # Reduced epochs for numbers dataset
+  log_smooth_window: 20
+  print_batch_step: 10
+  save_model_dir: ./output/numbers_rec/
+  save_epoch_step: 5               # Save checkpoint every 5 epochs
+  eval_batch_step: 100             # Evaluate every 100 batches (more frequent)
+  cal_metric_during_train: true
+  pretrained_model: null
+  checkpoints: null
+  save_inference_dir: null
+  infer_mode: false
+  character_dict_path: /opt/ml/input/data/training/th_dict.txt  # SageMaker path
+  character_type: number           # Numbers only
+  max_text_length: 1               # Single digit recognition
+  use_space_char: false
+  save_res_path: ./output/numbers_rec/predicts.txt
+
+Architecture:
+  model_type: rec
+  algorithm: CRNN                  # Good for small datasets
+  Backbone:
+    name: MobileNetV3
+    scale: 0.5                     # Compact model
+    model_name: large
+  Neck:
+    name: SequenceEncoder
+    encoder_type: rnn
+    hidden_size: 48                # Reduced from 96 for 10 classes only
+  Head:
+    name: CTCHead
+    fc_decay: 0.00001
+
+Loss:
+  name: CTCLoss
+
+PostProcess:
+  name: CTCLabelDecode
+
+Metric:
+  name: RecMetric
+  main_indicator: acc
+
+Optimizer:
+  name: Adam
+  beta1: 0.9
+  beta2: 0.999
+  lr:
+    name: Cosine
+    learning_rate: 0.005           # Higher learning rate for faster convergence
+    warmup_epoch: 2               # Shorter warmup
+  regularizer:
+    name: L2
+    factor: 0.00001
+
+Train:
+  dataset:
+    name: SimpleDataSet
+    data_dir: /opt/ml/input/data/training/rec/
+    label_file_list:
+      - /opt/ml/input/data/training/rec/rec_gt_train.txt
+    transforms:
+      - DecodeImage: {img_mode: BGR, channel_first: false}
+      - CTCLabelEncode: {}
+      - RecResizeImg: {image_shape: [3, 32, 128]}  # Smaller size for numbers
+      - KeepKeys: {keep_keys: [image, label, length]}
+  loader:
+    shuffle: true
+    drop_last: false
+    batch_size_per_card: 32        # Reduced batch size for small dataset
+    num_workers: 4
+
+Eval:
+  dataset:
+    name: SimpleDataSet
+    data_dir: /opt/ml/input/data/training/rec/
+    label_file_list:
+      - /opt/ml/input/data/training/rec/rec_gt_val.txt
+    transforms:
+      - DecodeImage: {img_mode: BGR, channel_first: false}
+      - CTCLabelEncode: {}
+      - RecResizeImg: {image_shape: [3, 32, 128]}  # Same as training
+      - KeepKeys: {keep_keys: [image, label, length]}
+  loader:
+    shuffle: false
+    drop_last: false
+    batch_size_per_card: 32
+    num_workers: 4
