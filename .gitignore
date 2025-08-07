@@ -373,7 +373,8 @@ doc/build/
 requirements-dev.txt
 debug/
 debug_*
-test_*.py
+scripts/ml/test_*.py
+scripts/training/test_*.py
 *_test_*.py
 
 # Jupyter Notebook checkpoints and outputs
