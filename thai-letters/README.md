@@ -135,6 +135,12 @@ python thai_dataset_quick.py 10    # เลือก dictionary → เลือ
 python thai_dataset_quick.py 5     # เลือก dictionary → เลือก 1,2,6 (rotation, brightness, position)
 ```
 
+### Convert to PaddleOCR Format
+```bash
+# Quick conversion (recommended)
+python quick_phase1_converter.py
+```
+
 ## 🔧 ข้อมูลทางเทคนิค
 
 ### ขนาดภาพที่ปรับปรุง:

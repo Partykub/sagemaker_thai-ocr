@@ -6,9 +6,51 @@ This document outlines all scripts in the Thai OCR project, their purposes, usag
 
 The `scripts/` directory contains automation and management scripts for the Thai OCR project. Scripts are organized by functionality and follow consistent naming conventions.
 
-## 🎯 Recent Updates (August 7, 2025)
+## 🎯 Recent Updates (August 11, 2025)
 
-### 🎉 **Model Testing & Validation Complete**
+### 🎉 **การเทรนที่สำเร็จและไฟล์ที่ใช้**
+
+#### **ไฟล์สำคัญสำหรับการเทรน (Training Files)**
+
+**Model Files ที่ใช้งานจริง**:
+```
+models/sagemaker_trained/
+├── best_accuracy.pdparams     # โมเดลหลัก (9,205,880 bytes)
+├── best_accuracy.pdopt        # Optimizer state
+├── config.yml                 # Training configuration (2,262 bytes)
+└── best_model/
+    ├── model.pdparams         # Alternative model format
+    └── model.pdopt            # Alternative optimizer
+```
+
+**Dictionary Files สำหรับ Character Set**:
+```
+thai-letters/
+├── th_dict.txt               # Thai characters (880 characters, 7,323 bytes)
+├── numbers_dict.txt          # Numbers 0-9 only
+└── number_dict.txt           # Alternative numbers dictionary
+```
+
+**Configuration Files สำหรับการเทรน**:
+```
+configs/rec/
+├── thai_rec_dev.yml          # Development training (10 epochs)
+├── thai_rec.yml              # Standard training (100 epochs)
+├── thai_rec_prod.yml         # Production training (200 epochs)
+├── numbers_inference_config.yml  # Numbers model inference
+└── quick_single_char_config.yml  # Single character training
+```
+
+**Training Data Structure**:
+```
+thai-letters/datasets/converted/train_data_thai_paddleocr_*/
+├── train_data/rec/
+│   ├── rec_gt_train.txt      # Training labels (image_path\tground_truth)
+│   ├── rec_gt_val.txt        # Validation labels (15 samples)
+│   └── thai_data/
+│       ├── train/            # Training images
+│       └── val/              # Validation images
+```
 
 #### `test_numbers_model.py` - **SUCCESSFUL CUSTOM MODEL TESTING**
 **Purpose**: Complete validation of SageMaker-trained numbers model with proper dataset
@@ -19,6 +61,21 @@ The `scripts/` directory contains automation and management scripts for the Thai
 - ✅ **Proper Architecture Match**: CRNN + MobileNetV3 consistency
 - ✅ **Validation Dataset**: Uses correct numbers dataset (0-9)
 - 📊 **Performance Metrics**: 13.3% accuracy, identified improvement areas
+
+**ไฟล์ที่ใช้ในการเทรน**:
+```bash
+# Model file - โมเดลที่เทรนแล้ว
+models/sagemaker_trained/best_accuracy.pdparams
+
+# Dictionary file - ชุดตัวอักษรที่รองรับ
+thai-letters/th_dict.txt  # หรือ numbers_dict.txt สำหรับตัวเลข
+
+# Configuration file - การตั้งค่าการเทรน
+configs/rec/thai_rec.yml  # หรือ numbers_inference_config.yml
+
+# Training data - ข้อมูลสำหรับเทรน
+thai-letters/datasets/converted/train_data_thai_paddleocr_*/train_data/rec/
+```
 
 **Usage**:
 ```bash
@@ -44,6 +101,88 @@ python test_numbers_model.py
 - Model validation and performance assessment
 - Debugging inference issues
 - Architecture consistency verification
+
+### 📚 **วิธีการเทรน Thai OCR Model แบบสมบูรณ์**
+
+#### **ขั้นตอนการเทรน (Training Workflow)**
+
+**1. เตรียมข้อมูล (Data Preparation)**:
+```bash
+# สร้างข้อมูลสำหรับเทรน
+cd thai-letters
+python thai_dataset_quick.py 100  # สร้าง 100 ภาพ
+
+# เลือก dictionary ที่ต้องการ:
+# - numbers_dict.txt (สำหรับตัวเลข 0-9)
+# - th_dict.txt (สำหรับตัวอักษรไทย)
+
+# เลือก effects:
+# - 0 = ไม่มี effects (ภาพชัด)
+# - 9 = effects ทั้งหมด (ภาพหลากหลาย)
+```
+
+**2. แปลงข้อมูลเป็น PaddleOCR Format**:
+```bash
+# แปลงข้อมูลให้เข้ากับ PaddleOCR
+python phase1_paddleocr_converter.py \
+  --input-path thai_dataset_YYYYMMDD_HHMM/ \
+  --output-path train_data_thai_paddleocr_v1/
+```
+
+**3. สร้าง Configuration Files**:
+```bash
+# สร้างไฟล์ config สำหรับเทรน
+python ../scripts/training/setup_training_config.py
+
+# ได้ไฟล์:
+# - configs/rec/thai_rec_dev.yml (10 epochs - ทดสอบ)
+# - configs/rec/thai_rec.yml (100 epochs - มาตรฐาน)
+# - configs/rec/thai_rec_prod.yml (200 epochs - production)
+```
+
+**4. เทรนแบบ Local (ทดสอบ)**:
+```bash
+cd PaddleOCR
+python tools/train.py -c ../configs/rec/thai_rec_dev.yml
+```
+
+**5. เทรนบน SageMaker (Production)**:
+```bash
+# เทรนแบบอัตโนมัติ
+python scripts/continue_deployment_v2.py
+
+# หรือเทรนแบบ manual
+python scripts/training/manual_numbers_training.py
+```
+
+**6. ทดสอบโมเดล**:
+```bash
+# ทดสอบโมเดลที่เทรนแล้ว
+python test_numbers_model.py
+
+# หรือทดสอบแบบ manual
+cd PaddleOCR
+python tools/infer_rec.py \
+  -c "../test_inference_config.yml" \
+  -o Global.infer_img="../test_images/image.jpg"
+```
+
+#### **ไฟล์สำคัญที่ต้องมี (Required Files)**
+
+**ก่อนเทรน**:
+- `thai-letters/th_dict.txt` - Character dictionary
+- `configs/rec/thai_rec.yml` - Training configuration
+- `train_data_thai_paddleocr_*/train_data/rec/` - Training data
+
+**หลังเทรน**:
+- `models/sagemaker_trained/best_accuracy.pdparams` - Trained model
+- `models/sagemaker_trained/config.yml` - Model configuration
+- `output/rec/` - Local training outputs
+
+**สำหรับ Inference**:
+- Model file (.pdparams)
+- Dictionary file (.txt)
+- Configuration file (.yml)
 
 ### ✨ **Enhanced Dataset Generation**
 
@@ -558,6 +697,95 @@ python scripts/ml/test_model_with_ground_truth.py
 
 ---
 
+## 📋 **Quick Reference - ไฟล์สำคัญสำหรับการเทรน**
+
+### **Model Files (หลังเทรนเสร็จ)**
+```
+models/sagemaker_trained/
+├── best_accuracy.pdparams     # โมเดลหลัก (9.2MB)
+├── best_accuracy.pdopt        # Optimizer state
+├── config.yml                 # Model configuration
+└── best_model/
+    ├── model.pdparams         # Alternative format
+    └── model.pdopt
+```
+
+### **Dictionary Files (Character Sets)**
+```
+thai-letters/
+├── th_dict.txt               # ตัวอักษรไทย (880 characters)
+├── numbers_dict.txt          # ตัวเลข 0-9 (10 characters)
+└── number_dict.txt           # Alternative numbers
+```
+
+### **Configuration Files**
+```
+configs/rec/
+├── thai_rec_dev.yml          # Development (10 epochs)
+├── thai_rec.yml              # Standard (100 epochs)
+├── thai_rec_prod.yml         # Production (200 epochs)
+├── test_inference_config.yml # Testing configuration
+├── numbers_inference_config.yml # Numbers model config
+└── quick_single_char_config.yml # Single character
+```
+
+### **Training Data Structure**
+```
+thai-letters/datasets/converted/train_data_thai_paddleocr_*/
+├── train_data/rec/
+│   ├── rec_gt_train.txt      # Training labels
+│   ├── rec_gt_val.txt        # Validation labels (15 samples)
+│   └── thai_data/
+│       ├── train/            # Training images
+│       └── val/              # Validation images (15 images)
+```
+
+### **Key Scripts สำหรับการเทรน**
+```
+# Data Generation
+thai-letters/thai_dataset_quick.py        # สร้างข้อมูล
+
+# Training
+scripts/continue_deployment_v2.py         # เทรนบน SageMaker (อัตโนมัติ)
+scripts/training/manual_numbers_training.py # เทรน numbers (manual)
+PaddleOCR/tools/train.py                  # เทรน local
+
+# Testing
+test_numbers_model.py                     # ทดสอบ numbers model
+test_sagemaker_model.py                   # ทดสอบ Thai model
+PaddleOCR/tools/infer_rec.py             # Inference แบบ manual
+```
+
+### **Output Files (ผลลัพธ์)**
+```
+# Test Results
+numbers_model_test_results_*.json        # ผลลัพธ์ numbers model
+model_analysis_report.json               # รายงานวิเคราะห์โมเดล
+validation_data_report.txt               # รายงานข้อมูล validation
+
+# Inference Results  
+inference_results.txt                    # ผลลัพธ์ inference ทั่วไป
+numbers_inference_results.txt            # ผลลัพธ์ numbers inference
+
+# Training Outputs
+output/rec/                               # Local training outputs
+models/model.tar.gz                      # Downloaded SageMaker model
+```
+
+### **Commands สำหรับเทรนเร็ว (Quick Training)**
+```bash
+# เทรน Numbers Model (13 นาที, $0.11)
+python scripts/training/manual_numbers_training.py
+
+# ทดสอบผลลัพธ์
+python test_numbers_model.py
+
+# สร้างข้อมูลใหม่
+cd thai-letters && python thai_dataset_quick.py 50
+```
+
+---
+
 ## Script Reference
 
 ### Infrastructure Management Scripts
@@ -870,6 +1098,83 @@ Scripts are designed to work with the permissions defined in `required_permissio
 
 ## Common Usage Patterns
 
+### 🚀 **เทรน Thai OCR Model (Training Workflow)**
+
+#### **การเทรนครั้งแรก (First Time Training)**
+```bash
+# 1. ตรวจสอบ permissions
+python scripts/testing/test_aws_permissions.py
+
+# 2. ตั้งค่า infrastructure
+python scripts/infrastructure/aws_manager.py
+
+# 3. สร้างข้อมูลเทรน
+cd thai-letters
+python thai_dataset_quick.py 200  # สร้าง 200 ภาพ
+# → เลือก dictionary (th_dict.txt หรือ numbers_dict.txt)
+# → เลือก effects (0=ไม่มี, 9=ทั้งหมด)
+
+# 4. แปลงข้อมูล
+python phase1_paddleocr_converter.py --input-path <folder> --output-path <output>
+
+# 5. สร้าง config
+cd ..
+python scripts/training/setup_training_config.py
+
+# 6. เทรนบน SageMaker
+python scripts/continue_deployment_v2.py
+```
+
+#### **การเทรนเฉพาะตัวเลข (Numbers Training)**
+```bash
+# 1. สร้างข้อมูลตัวเลข
+cd thai-letters
+python thai_dataset_quick.py 50
+# → เลือก numbers_dict.txt
+# → เลือก effects 9 (ทั้งหมด)
+
+# 2. เทรนแบบเร็ว
+python ../scripts/training/manual_numbers_training.py
+# Duration: ~13 นาที, Cost: ~$0.11
+
+# 3. ทดสอบผลลัพธ์
+python ../test_numbers_model.py
+```
+
+#### **การเทรนแบบ Local (Development)**
+```bash
+# 1. เตรียมข้อมูลขนาดเล็ก
+cd thai-letters
+python thai_dataset_quick.py 10  # ข้อมูลน้อยสำหรับทดสอบ
+
+# 2. แปลงข้อมูล
+python phase1_paddleocr_converter.py --input-path <folder> --output-path <output>
+
+# 3. สร้าง config แบบ dev
+cd ..
+python scripts/training/setup_training_config.py
+
+# 4. เทรน local
+cd PaddleOCR
+python tools/train.py -c ../configs/rec/thai_rec_dev.yml  # 10 epochs
+```
+
+#### **การทดสอบโมเดล (Model Testing)**
+```bash
+# 1. ทดสอบโมเดล numbers
+python test_numbers_model.py
+# Output: JSON ผลลัพธ์ + config files
+
+# 2. ทดสอบแบบ manual
+cd PaddleOCR
+python tools/infer_rec.py \
+  -c "../numbers_inference_config.yml" \
+  -o Global.infer_img="../validation_samples/image.jpg"
+
+# 3. ทดสอบแบบ comprehensive
+python test_sagemaker_model.py
+```
+
 ### Initial Project Setup
 ```bash
 # 1. Test permissions
@@ -931,6 +1236,103 @@ aws sts get-caller-identity
 ## Error Handling
 
 ### Common Issues and Solutions
+
+### Troubleshooting
+
+#### **ไฟล์สำคัญสำหรับ Debug และแก้ปัญหา**
+
+**1. การตรวจสอบ Model และ Configuration**:
+```bash
+# ดู model files
+ls -la models/sagemaker_trained/
+# ต้องมี: best_accuracy.pdparams, config.yml
+
+# ตรวจสอบ dictionary
+wc -l thai-letters/th_dict.txt
+# Output: 880 lines (characters)
+
+# ตรวจสอบ training data
+head -5 thai-letters/datasets/converted/*/train_data/rec/rec_gt_val.txt
+# Format: image_path\tground_truth
+```
+
+**2. การตรวจสอบ Configuration Files**:
+```bash
+# ดู config สำหรับ inference
+cat test_inference_config.yml
+cat numbers_inference_config.yml
+
+# ดู training config
+cat configs/rec/thai_rec.yml
+```
+
+**3. ลองใช้โมเดลแบบง่าย**:
+```bash
+# ทดสอบ single image
+cd PaddleOCR
+python tools/infer_rec.py \
+  -c "../test_inference_config.yml" \
+  -o Global.infer_img="../validation_samples/001.jpg"
+```
+
+**4. ตรวจสอบ Log Files**:
+```bash
+# ดู training logs (local)
+tail -50 output/rec/train.log
+
+# ดู inference results
+cat inference_results.txt
+cat numbers_inference_results.txt
+```
+
+#### **Common Issues and Solutions**
+
+**ปัญหา: โมเดลโหลดไม่ได้**:
+```bash
+# ตรวจสอบไฟล์โมเดล
+ls -la models/sagemaker_trained/best_accuracy.*
+# ต้องมี: .pdparams และ .pdopt
+
+# ตรวจสอบ config
+python -c "import yaml; print(yaml.safe_load(open('models/sagemaker_trained/config.yml')))"
+```
+
+**ปัญหา: Dictionary ไม่ตรงกัน**:
+```bash
+# เปรียบเทียบ dictionary
+wc -l thai-letters/th_dict.txt      # 880 lines
+wc -l thai-letters/numbers_dict.txt # 10 lines
+
+# ใช้ dictionary ที่ตรงกับการเทรน
+# Numbers model → ใช้ numbers_dict.txt
+# Thai model → ใช้ th_dict.txt
+```
+
+**ปัญหา: การเทรนใช้เวลานาน**:
+```bash
+# ใช้ dev config สำหรับทดสอบ (10 epochs)
+python tools/train.py -c ../configs/rec/thai_rec_dev.yml
+
+# หรือลดจำนวนข้อมูล
+python thai-letters/thai_dataset_quick.py 10  # สร้างแค่ 10 ภาพ
+```
+
+**ปัญหา: AWS Permissions**:
+```bash
+# ตรวจสอบ permissions
+python scripts/testing/test_aws_permissions.py
+
+# ตรวจสอบ AWS credentials
+aws sts get-caller-identity
+aws configure list
+```
+
+#### **Files สำหรับ Debug**:
+- `inference_results.txt` - ผลลัพธ์การทดสอบ inference
+- `numbers_inference_results.txt` - ผลลัพธ์ numbers model
+- `validation_data_report.txt` - รายงานข้อมูล validation
+- `model_analysis_report.json` - วิเคราะห์โมเดล
+- `numbers_model_test_results_*.json` - ผลลัพธ์การทดสอบ
 
 **Permission Denied Errors**:
 - Run `python test_aws_permissions.py` to validate access

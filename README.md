@@ -2,7 +2,12 @@
 
 A comprehensive Optical Character Recognition (OCR) solution for the Thai language built on PaddleOCR. This project provides scripts for data generation, dataset conversion, model training, and deployment on AWS SageMaker with infrastructure managed by Terraform.
 
-## 🎯 Project Status (August 7, 2025)
+## 🎯 Project Status (August 11, 2025)
+
+### 🚀 **Updated Development Plan**
+- **ทางเลือก Architecture**: สามารถเลือก architecture ต่างๆ (CRNN, SVTR, SRN, NRTR, DB, SAR, RARE, RobustScanner)
+- **ทางเลือก GPU**: สามารถเลือก GPU instances ตามความต้องการ (ml.g4dn.xlarge, ml.p3.2xlarge, ml.g5.xlarge)
+- **Development Tasks**: ติดตามการพัฒนาที่ [Development Tasks](development-task.md)
 
 ### 🎉 **BREAKTHROUGH: Custom Model Working Successfully!**
 
@@ -315,12 +320,14 @@ For detailed script usage, see [`doc/scripts.md`](doc/scripts.md):
 - [Installation & Setup](doc/installation.md)
 - [Dataset Generation & Conversion](doc/dataset.md)
 - [Training Pipeline](doc/training.md)
+- [Advanced Training Guide](doc/advanced-training-guide.md) - **NEW! เลือก Architecture และ GPU**
 - [Deployment & Inference](doc/deployment.md)
 - [Terraform Infrastructure](doc/terraform.md)
 - [Development Task List](development-task.md)
 
 ### 🇹🇭 เอกสารภาษาไทย (Thai Documentation)
 - **[คู่มือการเทรน SageMaker](doc/sagemaker-training-guide.md)** - ครบวงจรการเทรน Thai OCR บน AWS SageMaker
+- **[คู่มือการเทรนแบบละเอียด](doc/advanced-training-guide.md)** - **NEW! เลือก Architecture และ GPU ได้**
 - **[สรุปโครงการ](doc/thai-project-summary.md)** - ภาพรวมโครงการและแผนการพัฒนา
 
 ## License
